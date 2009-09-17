@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "time_crisis"
     gem.summary = %Q{date and time related extensions}
-    gem.description = %Q{ate and time related extensions}
+    gem.description = %Q{date and time related extensions}
     gem.email = "ttilley@gmail.com"
     gem.homepage = "http://github.com/ttilley/time_crisis"
     gem.authors = ["Travis Tilley"]
