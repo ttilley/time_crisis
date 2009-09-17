@@ -5,8 +5,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "time_crisis"
-    gem.summary = %Q{arbitrary date ranges}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{date and time related extensions}
+    gem.description = %Q{ate and time related extensions}
     gem.email = "ttilley@gmail.com"
     gem.homepage = "http://github.com/ttilley/time_crisis"
     gem.authors = ["Travis Tilley"]
