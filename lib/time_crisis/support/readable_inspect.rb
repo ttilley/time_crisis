@@ -3,7 +3,7 @@ module TimeCrisis::Support::ReadableInspect
     def readable_inspect
       strftime("%a, %d %b %Y")
     end
-    
+
     def self.included(base)
       base.class_eval do
         alias_method :default_inspect, :inspect
@@ -11,12 +11,12 @@ module TimeCrisis::Support::ReadableInspect
       end
     end
   end
-  
+
   module DateTime
     def readable_inspect
       to_s(:rfc822)
     end
-    
+
     def self.included(base)
       base.class_eval do
         alias_method :default_inspect, :inspect
@@ -26,8 +26,8 @@ module TimeCrisis::Support::ReadableInspect
   end
 end
 
-Date.send(:include, TimeCrisis::Support::ReadableInspect::Date) unless 
-  Date.instance_methods.include?('readable_inspect')
+Date.send(:include, TimeCrisis::Support::ReadableInspect::Date) unless
+Date.instance_methods.include?('readable_inspect')
 
-DateTime.send(:include, TimeCrisis::Support::ReadableInspect::DateTime) unless 
-  DateTime.instance_methods.include?('readable_inspect')
+DateTime.send(:include, TimeCrisis::Support::ReadableInspect::DateTime) unless
+DateTime.instance_methods.include?('readable_inspect')

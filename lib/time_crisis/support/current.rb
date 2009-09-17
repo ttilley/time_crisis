@@ -4,13 +4,13 @@ module TimeCrisis::Support::Current
       now
     end
   end
-  
+
   module Date
     def current
       today
     end
   end
-  
+
   module DateTime
     def current
       ::Time.now.to_datetime

@@ -12,7 +12,7 @@ module TimeCrisis
     def october(year=nil);    month_range(10, year); end
     def november(year=nil);   month_range(11, year); end
     def december(year=nil);   month_range(12, year); end
-    
+
     def month_range(month, year = nil)
       year ||= current.year
       base = ::Date.civil(year, month, 1)

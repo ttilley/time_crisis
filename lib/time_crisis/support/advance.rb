@@ -10,7 +10,7 @@ module TimeCrisis::Support::Advance
       d
     end
   end
-  
+
   module Time
     def advance(options)
       unless options[:weeks].nil?
@@ -29,7 +29,7 @@ module TimeCrisis::Support::Advance
       seconds_to_advance == 0 ? time_advanced_by_date : time_advanced_by_date.since(seconds_to_advance)
     end
   end
-  
+
   module DateTime
     def advance(options)
       d = to_date.advance(options)

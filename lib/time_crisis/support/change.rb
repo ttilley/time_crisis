@@ -7,33 +7,33 @@ module TimeCrisis::Support::Change
         options[:day]   || self.day
       )
     end
-    
+
     def beginning_of_year
       change(:month => 1, :day => 1)
     end
-    
+
     def end_of_year
       change(:month => 12, :day => 31)
     end
-    
+
     def beginning_of_month
       change(:day => 1)
     end
-    
+
     def end_of_month
       last_day = self.class.days_in_month(self.month, self.year)
       change(:day => last_day)
     end
-    
+
     def beginning_of_day
       to_time
     end
-    
+
     def end_of_day
       to_time.end_of_day
     end
   end
-  
+
   module Time
     def change(options={})
       ::Time.send(
@@ -47,33 +47,33 @@ module TimeCrisis::Support::Change
         options[:usec]  || ((options[:hour] || options[:min] || options[:sec]) ? 0 : usec)
       )
     end
-    
+
     def beginning_of_year
       change(:month => 1, :day => 1, :hour => 0, :min => 0, :sec => 0)
     end
-    
+
     def end_of_year
       change(:month => 12,:day => 31,:hour => 23, :min => 59, :sec => 59)
     end
-    
+
     def beginning_of_month
       change(:day => 1,:hour => 0, :min => 0, :sec => 0, :usec => 0)
     end
-    
+
     def end_of_month
       last_day = self.class.days_in_month(self.month, self.year)
       change(:day => last_day, :hour => 23, :min => 59, :sec => 59, :usec => 999999.999)
     end
-    
+
     def beginning_of_day
       change(:hour => 0, :min => 0, :sec => 0, :usec => 0)
     end
-    
+
     def end_of_day
       change(:hour => 23, :min => 59, :sec => 59, :usec => 999999.999)
     end
   end
-  
+
   module DateTime
     def change(options={})
       ::DateTime.civil(
