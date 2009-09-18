@@ -1,7 +1,0 @@
-= Time Crisis
-
-Various date and time related methods. Meteorological season calculations, date ranges, and named months and currently included.
-
-== Copyright
-
-Copyright (c) 2009 Travis Tilley. See LICENSE for details.
