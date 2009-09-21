@@ -51,7 +51,7 @@ module TimeCrisis::Support::Conversions
     end
 
     def to_date
-      ::Date.civil(::Date._parse(self, false).values_at(:year, :mon, :mday))
+      ::Date.civil(*::Date._parse(self, false).values_at(:year, :mon, :mday))
     end
 
     def to_datetime
