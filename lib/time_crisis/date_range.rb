@@ -7,8 +7,8 @@ class TimeCrisis::DateRange < Range
     options[:end] = args.shift unless args.empty?
     options[:exclude_end] = args.shift unless args.empty?
 
-    start = options[:begin].nil? ? false : options[:begin].to_date
-    stop = options[:end].nil? ? false : options[:end].to_date
+    start = options[:begin].nil? ? false : options[:begin].to_tc_date
+    stop = options[:end].nil? ? false : options[:end].to_tc_date
 
     unit = options[:unit] || 1
     scale = options[:scale] || 'years'
@@ -24,12 +24,12 @@ class TimeCrisis::DateRange < Range
   end
 
   def include?(datelike)
-    super(datelike.to_date)
+    super(datelike.to_tc_date)
   end
 
   def each_slice_by_date(*args, &block)
     dates = args.map! do |datelike|
-      date = datelike.to_date
+      date = datelike.to_tc_date
       raise ArgumentError, "Date not within range: #{date}" unless self.include?(date)
       date
     end
@@ -98,5 +98,8 @@ module TimeCrisis::DateRange::Date
   end
 end
 
-Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
-Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
+TimeCrisis::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
+TimeCrisis::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
+
+::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
+::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)

@@ -13,12 +13,16 @@ module TimeCrisis
     def november(year=nil);   month_range(11, year); end
     def december(year=nil);   month_range(12, year); end
 
-    def month_range(month, year = nil)
+    def month_range(month=nil, year=nil)
+      month ||= current.month
       year ||= current.year
-      base = ::Date.civil(year, month, 1)
+      
+      base = TimeCrisis::Date.civil(year, month, 1)
       base.for(1, 'months')
     end
   end
 end
 
-Date.extend(TimeCrisis::NamedMonths)
+TimeCrisis::Date.extend(TimeCrisis::NamedMonths)
+
+::Date.extend(TimeCrisis::NamedMonths)

@@ -11,47 +11,55 @@ module TimeCrisis
   # on 1 September, and winter on 1 December.
   # - http://en.wikipedia.org/wiki/Season
   module MeteorologicalSeasons
-    def beginning_of_meteorological_spring
-      ::Date.civil(self.year, 3, 1)
-    end
+    module ClassMethods
+      def beginning_of_meteorological_spring(year=current.year)
+        TimeCrisis::Date.civil(year, 3, 1)
+      end
 
-    def beginning_of_meteorological_summer
-      ::Date.civil(self.year, 6, 1)
-    end
+      def beginning_of_meteorological_summer(year=current.year)
+        TimeCrisis::Date.civil(year, 6, 1)
+      end
 
-    def beginning_of_meteorological_autumn
-      ::Date.civil(self.year, 9, 1)
-    end
-    alias beginning_of_meteorological_fall beginning_of_meteorological_autumn
+      def beginning_of_meteorological_autumn(year=current.year)
+        TimeCrisis::Date.civil(year, 9, 1)
+      end
+      alias beginning_of_meteorological_fall beginning_of_meteorological_autumn
 
-    def beginning_of_meteorological_winter
-      ::Date.civil(self.year, 12, 1)
+      def beginning_of_meteorological_winter(year=current.year)
+        TimeCrisis::Date.civil(year, 12, 1)
+      end
     end
-
-    def meteorological_spring?
-      (beginning_of_meteorological_spring...beginning_of_meteorological_summer).include?(self)
-    end
-
-    def meteorological_summer?
-      (beginning_of_meteorological_summer...beginning_of_meteorological_autumn).include?(self)
-    end
-
-    def meteorological_autumn?
-      (beginning_of_meteorological_autumn...beginning_of_meteorological_winter).include?(self)
-    end
-
-    def meteorological_winter?
-      (beginning_of_year...beginning_of_meteorological_spring).include?(self) ||
-        (beginning_of_meteorological_winter..end_of_year).include?(self)
-    end
-
-    def meteorological_season
-      return 'spring' if meteorological_spring?
-      return 'summer' if meteorological_summer?
-      return 'fall' if meteorological_autumn?
-      return 'winter' if meteorological_winter?
+    
+    module InstanceMethods
+      def meteorological_spring?
+        [3,4,5].include?(self.month)
+      end
+      
+      def meteorological_summer?
+        [6,7,8].include?(self.month)
+      end
+      
+      def meteorological_autumn?
+        [9,10,11].include?(self.month)
+      end
+      alias meteorological_fall? meteorological_autumn?
+      
+      def meteorological_winter?
+        [1,2,12].include?(self.month)
+      end
+      
+      def meteorological_season
+        case self.month
+        when (1..2) then 'winter'
+        when (3..5) then 'spring'
+        when (6..8) then 'summer'
+        when (9..11) then 'fall'
+        when 12 then 'winter'
+        end
+      end
     end
   end
 end
 
-Date.send(:include, TimeCrisis::MeteorologicalSeasons)
+TimeCrisis::Date.extend(TimeCrisis::MeteorologicalSeasons::ClassMethods)
+TimeCrisis::Date.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)

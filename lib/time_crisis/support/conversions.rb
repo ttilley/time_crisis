@@ -1,82 +1,77 @@
-require 'rational'
-
 module TimeCrisis::Support::Conversions
-  module Date
-    def to_date
-      self
-    end if RUBY_VERSION < '1.9'
+  module Ruby
+    module Date
+      def to_tc_date
+        TimeCrisis::Date.civil(year, month, day)
+      end
 
-    def to_time(form = :local)
-      ::Time.send(form, year, month, day)
+      def to_tc_datetime
+        TimeCrisis::DateTime.civil(year, month, day, 0, 0, 0, 0)
+      end
     end
 
-    def to_datetime
-      ::DateTime.civil(year, month, day, 0, 0, 0, 0)
-    end if RUBY_VERSION < '1.9'
-  end
+    module Time
+      def to_tc_date
+        TimeCrisis::Date.civil(year, month, day)
+      end
 
-  module Time
-    def to_date
-      ::Date.new(year, month, day)
+      def to_tc_datetime
+        TimeCrisis::DateTime.civil(year, month, day, hour, min, sec, 0, utc_offset)
+      end
     end
 
-    def to_time
-      self
+    module DateTime
+      def to_tc_date
+        TimeCrisis::Date.civil(year, month, day)
+      end
+
+      def to_tc_datetime
+        TimeCrisis::DateTime.civil(year, month, day, hour, min, sec, 0, (offset * 86400).to_i)
+      end
     end
 
-    def to_datetime
-      ::DateTime.civil(year, month, day, hour, min, sec, Rational(utc_offset, 86400))
-    end
-  end
+    module String
+      def to_tc_date(opts={})
+        TimeCrisis::Date.parse(self, opts)
+      end
 
-  module DateTime
-    def to_date
-      ::Date.civil(year, month, day)
-    end
-
-    def to_time
-      self.offset == 0 ? ::Time.utc(year, month, day, hour, min, sec) : self
-    end
-
-    def to_datetime
-      self
-    end
-  end
-
-  module String
-    def to_time(form = :utc)
-      d = ::Date._parse(self, false).values_at(:year, :mon, :mday, :hour, :min, :sec, :sec_fraction).map { |arg| arg || 0 }
-      d[6] *= 1000000
-      ::Time.send(form, *d)
-    end
-
-    def to_date
-      ::Date.civil(*::Date._parse(self, false).values_at(:year, :mon, :mday))
-    end
-
-    def to_datetime
-      d = ::Date._parse(self, false).values_at(:year, :mon, :mday, :hour, :min, :sec, :zone, :sec_fraction).map { |arg| arg || 0 }
-      d[5] += d.pop
-      ::DateTime.civil(*d)
+      def to_tc_datetime(opts={})
+        TimeCrisis::DateTime.parse(self, opts)
+      end
     end
   end
-end
+  
+  module Internal
+    module Date
+      def to_tc_date
+        self
+      end
+      alias to_date to_tc_date
+      
+      def to_tc_datetime
+        TimeCrisis::DateTime.civil(year, month, day, 0, 0, 0, 0)
+      end
+      alias to_datetime to_tc_datetime
+    end
 
-# active support has support for time zones, so don't overwrite its' version
-unless Time.instance_methods.include?('local_time')
-  Date.class_eval do
-    # Ruby 1.9 has Date#to_time which converts to localtime only.
-    remove_method :to_time if instance_methods.include?(:to_time)
-    include TimeCrisis::Support::Conversions::Date
-  end
-
-  DateTime.class_eval do
-    # Ruby 1.9 has DateTime#to_time which internally relies on Time.
-    remove_method :to_time if instance_methods.include?(:to_time)
-    include TimeCrisis::Support::Conversions::DateTime
+    module DateTime
+      def to_tc_date
+        TimeCrisis::Date.civil(year, month, day)
+      end
+      alias to_date to_tc_date
+      
+      def to_tc_datetime
+        self
+      end
+      alias to_datetime to_tc_datetime
+    end
   end
 end
 
-Time.send(:include, TimeCrisis::Support::Conversions::Time)
+TimeCrisis::Date.send(:include, TimeCrisis::Support::Conversions::Internal::Date)
+TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Conversions::Internal::DateTime)
 
-String.send(:include, TimeCrisis::Support::Conversions::String)
+::Date.send(:include, TimeCrisis::Support::Conversions::Ruby::Date)
+::Time.send(:include, TimeCrisis::Support::Conversions::Ruby::Time)
+::DateTime.send(:include, TimeCrisis::Support::Conversions::Ruby::DateTime)
+::String.send(:include, TimeCrisis::Support::Conversions::Ruby::String)
