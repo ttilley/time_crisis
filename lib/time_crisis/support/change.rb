@@ -42,5 +42,6 @@ module TimeCrisis::Support::Change
   end
 end
 
+TimeCrisis::Date.send(:public, :days_in_month)
 TimeCrisis::Date.send(:include,  TimeCrisis::Support::Change::Date)
 TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Change::DateTime)
