@@ -38,11 +38,11 @@ class TimeCrisis::DateRange < Range
     start = self.begin
 
     dates.each do |date|
-      yield self.class.new(start, date, true)
+      yield self.class.new(start, date, true, self.subopt)
       start = date
     end
 
-    yield self.class.new(start, self.end, self.exclude_end?)
+    yield self.class.new(start, self.end, self.exclude_end?, self.subopt)
   end
 
   def each_slice_by_period(period, unit=1, &block)
@@ -52,12 +52,12 @@ class TimeCrisis::DateRange < Range
     raise ArgumentError, "Period exceeds range" if nstart >= self.real_end
 
     while nstart < self.real_end
-      yield self.class.new(start, nstart, true)
+      yield self.class.new(start, nstart, true, self.subopt)
       start = nstart
       nstart = start.advance(period.to_sym => unit)
     end
 
-    yield self.class.new(start, self.end, self.exclude_end?)
+    yield self.class.new(start, self.end, self.exclude_end?, self.subopt)
   end
 
   def each_month(&block)
@@ -72,6 +72,11 @@ class TimeCrisis::DateRange < Range
 
   def real_end
     @real_end ||= self.exclude_end? ? self.end.advance({:days => -1}) : self.end
+  end
+  
+  # make life easier when subclassing
+  def subopt
+    @subopt ||= {}
   end
 end
 
