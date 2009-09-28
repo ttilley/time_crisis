@@ -21,7 +21,7 @@ module TimeCrisis::Support::Change
     end
 
     def end_of_month
-      last_day = TimeCrisis::Date.days_in_month(self.month, self.year)
+      last_day = days_in_month
       change(:day => last_day)
     end
   end
