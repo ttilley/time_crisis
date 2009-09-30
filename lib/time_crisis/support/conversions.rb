@@ -40,30 +40,42 @@ module TimeCrisis::Support::Conversions
       end
     end
   end
-  
+
   module Internal
     module Date
       def to_tc_date
         self
       end
-      alias to_date to_tc_date
-      
+
       def to_tc_datetime
         TimeCrisis::DateTime.civil(year, month, day, 0, 0, 0, 0)
       end
-      alias to_datetime to_tc_datetime
+
+      def to_date
+        ::Date.civil(year, month, day)
+      end
+
+      def to_datetime
+        ::DateTime.civil(year, month, day, 0, 0, 0, 0)
+      end
+
+      def to_time(form = :local)
+        ::Time.send(form, year, month, day)
+      end
     end
 
     module DateTime
       def to_tc_date
         TimeCrisis::Date.civil(year, month, day)
       end
-      alias to_date to_tc_date
-      
+
       def to_tc_datetime
         self
       end
-      alias to_datetime to_tc_datetime
+
+      def to_date
+        ::Date.civil(year, month, day)
+      end
     end
   end
 end

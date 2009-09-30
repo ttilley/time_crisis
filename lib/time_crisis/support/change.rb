@@ -2,9 +2,9 @@ module TimeCrisis::Support::Change
   module Date
     def change(options={})
       TimeCrisis::Date.civil(
-        options[:year]  || self.year,
-        options[:month] || self.month,
-        options[:day]   || self.day
+              options[:year] || self.year,
+              options[:month] || self.month,
+              options[:day] || self.day
       )
     end
 
@@ -29,14 +29,14 @@ module TimeCrisis::Support::Change
   module DateTime
     def change(options={})
       TimeCrisis::DateTime.civil(
-        options[:year]    || year,
-        options[:month]   || month,
-        options[:day]     || day,
-        options[:hour]    || hour,
-        options[:min]     || (options[:hour] ? 0 : min),
-        options[:sec]     || ((options[:hour] || options[:min]) ? 0 : sec),
-        options[:usec]    || ((options[:hour] || options[:min] || options[:sec]) ? 0 : usec),
-        options[:offset]  || offset
+              options[:year] || year,
+              options[:month] || month,
+              options[:day] || day,
+              options[:hour] || hour,
+              options[:min] || (options[:hour] ? 0 : min),
+              options[:sec] || ((options[:hour] || options[:min]) ? 0 : sec),
+              options[:usec] || ((options[:hour] || options[:min] || options[:sec]) ? 0 : usec),
+              options[:offset] || offset
       )
     end
   end

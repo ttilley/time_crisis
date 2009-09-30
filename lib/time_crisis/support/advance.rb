@@ -4,9 +4,9 @@ module TimeCrisis::Support::Advance
       options = options.dup
       d = self
       d = d >> options.delete(:years) * 12 if options[:years]
-      d = d >> options.delete(:months)     if options[:months]
-      d = d +  options.delete(:weeks) * 7  if options[:weeks]
-      d = d +  options.delete(:days)       if options[:days]
+      d = d >> options.delete(:months) if options[:months]
+      d = d + options.delete(:weeks) * 7 if options[:weeks]
+      d = d + options.delete(:days) if options[:days]
       d
     end
   end

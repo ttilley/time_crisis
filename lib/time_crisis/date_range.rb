@@ -73,7 +73,7 @@ class TimeCrisis::DateRange < Range
   def real_end
     @real_end ||= self.exclude_end? ? self.end.advance({:days => -1}) : self.end
   end
-  
+
   # make life easier when subclassing
   def subopt
     @subopt ||= {}
