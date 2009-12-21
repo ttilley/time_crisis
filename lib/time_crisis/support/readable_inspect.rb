@@ -3,7 +3,7 @@ module TimeCrisis::Support::ReadableInspect
     def readable_inspect
       "#<TimeCrisis::Date #{strftime('%Y-%m-%d')}>"
     end
-    
+
     def self.included(base)
       base.class_eval do
         alias_method :default_inspect, :inspect
@@ -11,12 +11,12 @@ module TimeCrisis::Support::ReadableInspect
       end
     end
   end
-  
+
   module DateTime
     def readable_inspect
       "#<TimeCrisis::DateTime #{strftime('%Y-%m-%dT%H:%M:%S%Z')}>"
     end
-    
+
     def self.included(base)
       base.class_eval do
         alias_method :default_inspect, :inspect

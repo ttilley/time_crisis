@@ -23,38 +23,45 @@ module TimeCrisis
       def beginning_of_meteorological_autumn(year=current.year)
         TimeCrisis::Date.civil(year, 9, 1)
       end
+
       alias beginning_of_meteorological_fall beginning_of_meteorological_autumn
 
       def beginning_of_meteorological_winter(year=current.year)
         TimeCrisis::Date.civil(year, 12, 1)
       end
     end
-    
+
     module InstanceMethods
       def meteorological_spring?
-        [3,4,5].include?(self.month)
+        [3, 4, 5].include?(self.month)
       end
-      
+
       def meteorological_summer?
-        [6,7,8].include?(self.month)
+        [6, 7, 8].include?(self.month)
       end
-      
+
       def meteorological_autumn?
-        [9,10,11].include?(self.month)
+        [9, 10, 11].include?(self.month)
       end
+
       alias meteorological_fall? meteorological_autumn?
-      
+
       def meteorological_winter?
-        [1,2,12].include?(self.month)
+        [1, 2, 12].include?(self.month)
       end
-      
+
       def meteorological_season
         case self.month
-        when (1..2) then 'winter'
-        when (3..5) then 'spring'
-        when (6..8) then 'summer'
-        when (9..11) then 'fall'
-        when 12 then 'winter'
+          when (1..2) then
+            'winter'
+          when (3..5) then
+            'spring'
+          when (6..8) then
+            'summer'
+          when (9..11) then
+            'fall'
+          when 12 then
+            'winter'
         end
       end
     end

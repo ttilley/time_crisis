@@ -1,6 +1,7 @@
-nbproject
 *.sw?
 .DS_Store
+.idea
 coverage
-rdoc
+nbproject
 pkg
+rdoc

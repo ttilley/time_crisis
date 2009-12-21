@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{time_crisis}
-  s.version = "0.1.1"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Travis Tilley"]
-  s.date = %q{2009-09-27}
+  s.date = %q{2009-09-30}
   s.description = %q{date and time related extensions}
   s.email = %q{ttilley@gmail.com}
   s.extra_rdoc_files = [
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
      "lib/time_crisis/meteorological_seasons.rb",
      "lib/time_crisis/named_months.rb",
      "lib/time_crisis/support.rb",
+     "lib/time_crisis/support/acts_like.rb",
      "lib/time_crisis/support/advance.rb",
      "lib/time_crisis/support/change.rb",
      "lib/time_crisis/support/conversions.rb",
