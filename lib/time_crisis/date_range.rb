@@ -7,8 +7,21 @@ class TimeCrisis::DateRange < Range
     options[:end] = args.shift unless args.empty?
     options[:exclude_end] = args.shift unless args.empty?
 
-    start = options[:begin].nil? ? false : options[:begin].to_tc_date
-    stop = options[:end].nil? ? false : options[:end].to_tc_date
+    start = if options[:begin].nil?
+      false
+    elsif options[:begin].is_a?(TimeCrisis::Date)
+      options[:begin]
+    else
+      options[:begin].to_tc_date
+    end
+
+    stop = if options[:end].nil?
+      false
+    elsif options[:end].is_a?(TimeCrisis::Date)
+      options[:end]
+    else
+      options[:end].to_tc_date
+    end
 
     unit = options[:unit] || 1
     scale = options[:scale] || 'years'
