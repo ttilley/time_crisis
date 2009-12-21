@@ -4,5 +4,5 @@ module TimeCrisis::Weekend
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::Weekend)
-TimeCrisis::DateTime.send(:include, TimeCrisis::Weekend)
+::TimeCrisis::Date.send(:include, TimeCrisis::Weekend)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Weekend)

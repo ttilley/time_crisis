@@ -16,5 +16,5 @@ module TimeCrisis::Support::ActsLike
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::Support::ActsLike::Date)
-TimeCrisis::DateTime.send(:include, TimeCrisis::Support::ActsLike::DateTime)
+::TimeCrisis::Date.send(:include, TimeCrisis::Support::ActsLike::Date)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Support::ActsLike::DateTime)

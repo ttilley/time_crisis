@@ -80,10 +80,10 @@ module TimeCrisis::Support::Conversions
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::Support::Conversions::Internal::Date)
-TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Conversions::Internal::DateTime)
+::TimeCrisis::Date.send(:include, TimeCrisis::Support::Conversions::Internal::Date)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Conversions::Internal::DateTime)
 
-::Date.send(:include, TimeCrisis::Support::Conversions::Ruby::Date)
+::Date.send(:include, TimeCrisis::Support::Conversions::Ruby::Date) if defined?(::Date)
 ::Time.send(:include, TimeCrisis::Support::Conversions::Ruby::Time)
-::DateTime.send(:include, TimeCrisis::Support::Conversions::Ruby::DateTime)
+::DateTime.send(:include, TimeCrisis::Support::Conversions::Ruby::DateTime) if defined?(::DateTime)
 ::String.send(:include, TimeCrisis::Support::Conversions::Ruby::String)

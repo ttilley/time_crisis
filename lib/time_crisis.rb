@@ -1,3 +1,10 @@
+unless defined?(Date)
+  begin
+    require 'date'
+  rescue LoadError
+  end
+end
+
 require 'third_base'
 
 module TimeCrisis

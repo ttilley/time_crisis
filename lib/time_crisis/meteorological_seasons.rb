@@ -68,5 +68,5 @@ module TimeCrisis
   end
 end
 
-TimeCrisis::Date.extend(TimeCrisis::MeteorologicalSeasons::ClassMethods)
-TimeCrisis::Date.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)
+::TimeCrisis::Date.extend(TimeCrisis::MeteorologicalSeasons::ClassMethods)
+::TimeCrisis::Date.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)

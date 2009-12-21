@@ -58,5 +58,5 @@ module TimeCrisis
   end
 end
 
-TimeCrisis::Date.extend(TimeCrisis::NamedMonths)
-::Date.extend(TimeCrisis::NamedMonths)
+::TimeCrisis::Date.extend(TimeCrisis::NamedMonths)
+::Date.extend(TimeCrisis::NamedMonths) if defined?(::Date)

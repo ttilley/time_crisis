@@ -11,7 +11,7 @@ module TimeCrisis
               :saturday => 6
       }
 
-      def nth_weekday(h={:year, :month, :weekday, :nth})
+      def nth_weekday(h={})
         raise ArgumentError unless h[:nth]
 
         today = TimeCrisis::Date.today
@@ -23,14 +23,22 @@ module TimeCrisis
         first_weekday = TimeCrisis::Date.new(h[:year], h[:month], 1).wday
 
         offset = target_weekday > 0 ? target_weekday - first_weekday + 1 : 7 - (first_weekday - 1)
-        day = (7 * (h[:nth] - 1)) + offset
+        day = h[:nth] == 1 ? 7 + offset : (7 * (h[:nth] - 1)) + offset
 
-        TimeCrisis::Date.new(h[:year], h[:month], day)
+        if $DEBUG
+          STDERR.puts "Arguments: #{h.inspect}"
+          STDERR.puts "Target weekday: #{target_weekday}"
+          STDERR.puts "First weekday: #{first_weekday}"
+          STDERR.puts "Offset: #{offset}"
+          STDERR.puts "Day: #{day}"
+        end
+
+        TimeCrisis::Date.civil(h[:year], h[:month], day)
       end
     end
 
     module InstanceMethods
-      def nth_weekday(h={:year, :month, :weekday, :nth})
+      def nth_weekday(h={})
         h[:year] ||= self.year
         h[:month] ||= self.month
         h[:weekday] ||= self.wday
@@ -41,7 +49,7 @@ module TimeCrisis
   end
 end
 
-TimeCrisis::Date.extend(TimeCrisis::NthWeekday::ClassMethods)
-TimeCrisis::Date.send(:include, TimeCrisis::NthWeekday::InstanceMethods)
-TimeCrisis::DateTime.extend(TimeCrisis::NthWeekday::ClassMethods)
-TimeCrisis::DateTime.send(:include, TimeCrisis::NthWeekday::InstanceMethods)
+::TimeCrisis::Date.extend(TimeCrisis::NthWeekday::ClassMethods)
+::TimeCrisis::Date.send(:include, TimeCrisis::NthWeekday::InstanceMethods)
+::TimeCrisis::DateTime.extend(TimeCrisis::NthWeekday::ClassMethods)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::NthWeekday::InstanceMethods)

@@ -21,5 +21,5 @@ module TimeCrisis::Support::Advance
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::Support::Advance::Date)
-TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Advance::DateTime)
+::TimeCrisis::Date.send(:include, TimeCrisis::Support::Advance::Date)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Support::Advance::DateTime)

@@ -26,5 +26,5 @@ module TimeCrisis::Support::ReadableInspect
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::Support::ReadableInspect::Date)
-TimeCrisis::DateTime.send(:include, TimeCrisis::Support::ReadableInspect::DateTime)
+::TimeCrisis::Date.send(:include, TimeCrisis::Support::ReadableInspect::Date)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Support::ReadableInspect::DateTime)

@@ -103,8 +103,10 @@ module TimeCrisis::DateRange::Date
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
-TimeCrisis::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
+::TimeCrisis::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
+::TimeCrisis::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
 
-::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
-::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
+if defined?(::Date)
+  ::Date.send(:include, TimeCrisis::DateRange::Date::InstanceMethods)
+  ::Date.extend(TimeCrisis::DateRange::Date::ClassMethods)
+end

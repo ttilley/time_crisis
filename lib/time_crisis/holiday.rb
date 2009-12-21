@@ -82,5 +82,5 @@ module TimeCrisis::Holiday
   end
 end
 
-TimeCrisis::Date.send(:include, TimeCrisis::InstanceMethods::Holiday)
-TimeCrisis::DateTime.send(:include, TimeCrisis::InstanceMethods::Holiday)
+::TimeCrisis::Date.send(:include, TimeCrisis::Holiday::InstanceMethods)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::Holiday::InstanceMethods)

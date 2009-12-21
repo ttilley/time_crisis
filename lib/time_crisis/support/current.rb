@@ -12,5 +12,5 @@ module TimeCrisis::Support::Current
   end
 end
 
-TimeCrisis::Date.extend(TimeCrisis::Support::Current::Date)
-TimeCrisis::DateTime.extend(TimeCrisis::Support::Current::DateTime)
+::TimeCrisis::Date.extend(TimeCrisis::Support::Current::Date)
+::TimeCrisis::DateTime.extend(TimeCrisis::Support::Current::DateTime)
