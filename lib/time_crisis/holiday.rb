@@ -14,7 +14,7 @@ module TimeCrisis::Holiday
       last_monday_of_may = TimeCrisis::Date.nth_weekday({
               :month => 5,
               :weekday => :monday,
-              :nth => 4
+              :nth => :last
       })
 
       [last_monday_of_may.month, last_monday_of_may.day]

@@ -13,17 +13,25 @@ module TimeCrisis
 
       def nth_weekday(h={})
         raise ArgumentError unless h[:nth]
+        nth = h[:nth].to_s == 'last' ? 5 : h[:nth]
 
         today = TimeCrisis::Date.today
         h[:year] ||= today.year
         h[:month] ||= today.month
         h[:weekday] ||= today.wday
 
+        target_month = TimeCrisis::Date.new(h[:year], h[:month], 1)
+        days_in_month = target_month.days_in_month
         target_weekday = h[:weekday].is_a?(Numeric) ? h[:weekday] : @@days_of_the_week[h[:weekday]]
-        first_weekday = TimeCrisis::Date.new(h[:year], h[:month], 1).wday
+        first_weekday = target_month.wday
 
         offset = target_weekday > 0 ? target_weekday - first_weekday + 1 : 7 - (first_weekday - 1)
-        day = h[:nth] == 1 ? 7 + offset : (7 * (h[:nth] - 1)) + offset
+        day = calculate_day_with_offset(nth, offset)
+
+        while day > days_in_month
+          nth = nth - 1
+          day = calculate_day_with_offset(nth, offset)
+        end
 
         if $DEBUG
           STDERR.puts "Arguments: #{h.inspect}"
@@ -34,6 +42,12 @@ module TimeCrisis
         end
 
         TimeCrisis::Date.civil(h[:year], h[:month], day)
+      end
+
+      private
+
+      def calculate_day_with_offset(nth, offset)
+        nth == 1 ? (offset > 0 ? offset : 7 + offset) : (7 * (nth - 1)) + offset
       end
     end
 
