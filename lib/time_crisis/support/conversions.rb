@@ -77,6 +77,10 @@ module TimeCrisis::Support::Conversions
         ::Date.civil(year, month, day)
       end
 
+      def to_datetime
+        ::DateTime.civil(year, month, day, hour, minute, second, Rational(offset, 86400))
+      end
+
       def to_time
         ::Time.at(strftime('%s').to_i)
       end

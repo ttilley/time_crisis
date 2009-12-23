@@ -1,18 +1,17 @@
-unless defined?(Date)
-  begin
-    require 'date'
-  rescue LoadError
-  end
+begin
+  require 'date'
+rescue LoadError
 end
 
+::Date = Class.new unless defined?(::Date)
+::DateTime = Class.new unless defined?(::DateTime)
+
 require 'third_base'
+TimeCrisis = ThirdBase
+require 'time_crisis/ext'
 
-TimeCrisis = ThirdBase.dup
-
-# add needed bits of active support to time crisis
-# necessary now that it uses ThirdBase
+require 'time_crisis/tzinfo'
 require 'time_crisis/support'
-
 require 'time_crisis/meteorological_seasons'
 require 'time_crisis/date_range'
 require 'time_crisis/named_months'
@@ -20,7 +19,6 @@ require 'time_crisis/weekend'
 require 'time_crisis/nth_weekday'
 require 'time_crisis/holiday'
 
-# TODO: make this less of an ugly hack
 module TimeCrisis
   class DateTime
     ENVMUTEX = Mutex.new
