@@ -62,6 +62,10 @@ module TimeCrisis::Support::Conversions
       def to_time(form = :local)
         ::Time.send(form, year, month, day)
       end
+
+      def xmlschema
+        to_tc_datetime.xmlschema
+      end
     end
 
     module DateTime
@@ -73,10 +77,6 @@ module TimeCrisis::Support::Conversions
         self
       end
 
-      def to_date
-        ::Date.civil(year, month, day)
-      end
-
       def to_datetime
         ::DateTime.civil(year, month, day, hour, minute, second, Rational(offset, 86400))
       end
@@ -85,6 +85,9 @@ module TimeCrisis::Support::Conversions
         ::Time.at(strftime('%s').to_i)
       end
 
+      def xmlschema
+        strftime("%Y-%m-%dT%H:%M:%S%Z")
+      end
     end
   end
 end
@@ -96,3 +99,12 @@ end
 ::Time.send(:include, TimeCrisis::Support::Conversions::Ruby::Time)
 ::DateTime.send(:include, TimeCrisis::Support::Conversions::Ruby::DateTime) if defined?(::DateTime)
 ::String.send(:include, TimeCrisis::Support::Conversions::Ruby::String)
+
+class Time
+  # Ruby 1.8-cvs and early 1.9 series define private Time#to_date
+  %w(to_date to_datetime).each do |method|
+    if private_instance_methods.include?(method) || private_instance_methods.include?(method.to_sym)
+      public method
+    end
+  end
+end

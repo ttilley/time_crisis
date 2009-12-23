@@ -1,3 +1,9 @@
+class Object
+  def acts_like?(duck)
+    respond_to? :"acts_like_#{duck}?"
+  end
+end
+
 module TimeCrisis::Support::ActsLike
   module Date
     def acts_like_date?
