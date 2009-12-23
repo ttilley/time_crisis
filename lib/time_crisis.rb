@@ -2,9 +2,9 @@ require 'date'
 require 'time'
 
 require 'third_base'
-TimeCrisis = ThirdBase
+TimeCrisis = ThirdBase.dup
 require 'time_crisis/ext'
-
+TimeCrisis::Time = ::Time.dup
 require 'time_crisis/tzinfo'
 require 'time_crisis/support'
 require 'time_crisis/meteorological_seasons'

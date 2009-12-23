@@ -15,11 +15,11 @@ module ThirdBase
     TIME_ZONE_RE_STRING = "(#{TIME_ZONE_SECOND_OFFSETS.keys.sort.join('|')}|[+-](?:\\d\\d:?(?:\\d\\d)?))"
     TIME_RE_STRING = "(?:[T ]?([\\d ]?\\d):(\\d\\d)(?::(\\d\\d(\\.\\d+)?))?([ap]m?)? ?#{TIME_ZONE_RE_STRING}?)?"
     DEFAULT_PARSERS[:time] = [[%r{\A#{TIME_RE_STRING}\z}io, proc do |m|
-        unless m[0] == ''
-          t = Time.now
-          add_parsed_time_parts(m, {:civil=>[t.year, t.mon, t.day], :not_parsed=>[:year, :mon, :mday]}, 1)
-        end
-      end]]
+          unless m[0] == ''
+            t = Time.now
+            add_parsed_time_parts(m, {:civil=>[t.year, t.mon, t.day], :not_parsed=>[:year, :mon, :mday]}, 1)
+          end
+        end]]
     DEFAULT_PARSERS[:iso] = [[%r{\A(-?\d{4})[-./ ](\d\d)[-./ ](\d\d)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[1].to_i, m[2].to_i, m[3].to_i])}]]
     DEFAULT_PARSERS[:us] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d(?:\d\d)?)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[3]), m[1].to_i, m[2].to_i])}],
       [%r{\A(\d\d?)/(\d?\d)#{TIME_RE_STRING}\z}o, proc{|m| add_parsed_time_parts(m, {:civil=>[Time.now.year, m[1].to_i, m[2].to_i], :not_parsed=>:year}, 3)}],
@@ -31,29 +31,29 @@ module ThirdBase
     DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d{4})#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[3].to_i, m[2].to_i, m[1].to_i])}],
       [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i])}]]
     DEFAULT_PARSERS[:num] = [[%r{\A(\d{2,8})#{TIME_RE_STRING}\z}io, proc do |n|
-        m = n[1]
-        add_parsed_time_parts(n, (
-        case m.length
-        when 2
-          t = Time.now
-          {:civil=>[t.year, t.mon, m.to_i], :not_parsed=>[:year, :mon, :mday]}
-        when 3
-          {:ordinal=>[Time.now.year, m.to_i], :not_parsed=>[:year, :mon, :mday]}
-        when 4
-          {:civil=>[Time.now.year, m[0..1].to_i, m[2..3].to_i], :not_parsed=>[:year]}
-        when 5
-          {:ordinal=>[two_digit_year(m[0..1]), m[2..4].to_i]}
-        when 6
-          {:civil=>[two_digit_year(m[0..1]), m[2..3].to_i, m[4..5].to_i]}
-        when 7
-          {:ordinal=>[m[0..3].to_i, m[4..6].to_i]}
-        when 8
-          {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
+          m = n[1]
+          add_parsed_time_parts(n, (
+              case m.length
+              when 2
+                t = Time.now
+                {:civil=>[t.year, t.mon, m.to_i], :not_parsed=>[:year, :mon, :mday]}
+              when 3
+                {:ordinal=>[Time.now.year, m.to_i], :not_parsed=>[:year, :mon, :mday]}
+              when 4
+                {:civil=>[Time.now.year, m[0..1].to_i, m[2..3].to_i], :not_parsed=>[:year]}
+              when 5
+                {:ordinal=>[two_digit_year(m[0..1]), m[2..4].to_i]}
+              when 6
+                {:civil=>[two_digit_year(m[0..1]), m[2..3].to_i, m[4..5].to_i]}
+              when 7
+                {:ordinal=>[m[0..3].to_i, m[4..6].to_i]}
+              when 8
+                {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
+              end
+            ), 2)
         end
-        ), 2)
-      end
       ]]
-    
+
     STRPTIME_PROC_H = proc{|h,x| h[:hour] = x.to_i}
     STRPTIME_PROC_M = proc{|h,x| h[:min] = x.to_i}
     STRPTIME_PROC_P = proc{|h,x| h[:meridian] = x.downcase == 'pm' ? :pm : :am}
@@ -65,43 +65,43 @@ module ThirdBase
       h.merge!(:jd=>j+UNIXEPOCH, :hour=>hours, :min=>minutes, :sec=>seconds)
     end
     STRPTIME_PROC_z = proc{|h,x| h[:offset] = convert_parsed_offset(x)}
-    
+
     # Public Class Methods
-    
+
     # Create a new DateTime with the given year, month, day of month, hour, minute, second, microsecond and offset.
     def self.civil(year, mon, day, hour=0, min=0, sec=0, usec=0, offset=0)
       new!(:civil=>[year, mon, day], :parts=>[hour, min, sec, usec], :offset=>offset)
     end
-    
+
     # Create a new DateTime with the given commercial week year, commercial week, commercial week day, hour, minute
     # second, microsecond, and offset.
     def self.commercial(cwyear, cweek, cwday=5, hour=0, min=0, sec=0, usec=0, offset=0)
       new!(:commercial=>[cwyear, cweek, cwday], :parts=>[hour, min, sec, usec], :offset=>offset)
     end
-    
+
     # Create a new DateTime with the given julian date, hour, minute, second, microsecond, and offset.
     def self.jd(jd, hour=0, min=0, sec=0, usec=0, offset=0)
       new!(:jd=>jd, :parts=>[hour, min, sec, usec], :offset=>offset)
     end
-    
+
     # Create a new DateTime with the given julian day, fraction of the day (0.5 is Noon), and offset.
     def self.jd_fract(jd, fract=0.0, offset=0)
       new!(:jd=>jd, :fract=>fract, :offset=>offset)
     end
-    
+
     # Create a new DateTime with the current date and time.
     def self.now
       t = Time.now
       new!(:civil=>[t.year, t.mon, t.day], :parts=>[t.hour, t.min, t.sec, t.usec], :offset=>t.utc_offset)
     end
-    
+
     # Create a new DateTime with the given year, day of year, hour, minute, second, microsecond, and offset.
     def self.ordinal(year, yday, hour=0, min=0, sec=0, usec=0, offset=0)
       new!(:ordinal=>[year, yday], :parts=>[hour, min, sec, usec], :offset=>offset)
     end
-    
+
     # Private Class Methods
-    
+
     def self._expand_strptime_format(v)
       case v
       when '%c' then '%a %b %e %H:%M:%S %Y'
@@ -112,7 +112,7 @@ module ThirdBase
       else super(v)
       end
     end
-    
+
     def self._strptime_part(v)
       case v
       when 'H', 'I' then ['(\d\d)', STRPTIME_PROC_H]
@@ -125,7 +125,7 @@ module ThirdBase
       else super(v)
       end
     end
-    
+
     # m:
     # * i + 0 : hour
     # * i + 1 : minute
@@ -146,7 +146,7 @@ module ThirdBase
       end
       min = m[i+1].to_i
       sec = m[i+2].to_i
-      sec_fraction = m[i+3].to_f 
+      sec_fraction = m[i+3].to_f
       not_parsed << :hour unless m[i]
       not_parsed << :min unless m[i+1]
       not_parsed << :sec unless m[i+2]
@@ -154,11 +154,11 @@ module ThirdBase
       h.merge!(:parts=>[hour, min, sec, (sec_fraction/0.000001).to_i], :offset=>offset, :not_parsed=>not_parsed)
       h
     end
-    
+
     def self.default_parser_hash
       DEFAULT_PARSERS
     end
-    
+
     def self.default_parser_list
       DEFAULT_PARSER_LIST
     end
@@ -168,10 +168,10 @@ module ThirdBase
       if meridian == :am
         hour == 12 ? 0 : hour
       else
-        hour < 12 ? hour + 12 : hour 
+        hour < 12 ? hour + 12 : hour
       end
     end
-    
+
     def self.new_from_parts(date_hash)
       not_parsed = [:hour, :min, :sec].reject{|x| date_hash.has_key?(x)}
       not_parsed.concat([:zone, :offset]) unless date_hash.has_key?(:offset)
@@ -220,29 +220,29 @@ module ThirdBase
         x[0..2].to_i*3600 + x[3..4].to_i*60
       end
     end
-    
+
     def self.parser_hash
       PARSERS
     end
-    
+
     def self.parser_list
       PARSER_LIST
     end
-    
+
     def self.strptime_default
       '%Y-%m-%dT%H:%M:%S'
     end
-    
+
     private_class_method :_expand_strptime_format, :_strptime_part, :add_parsed_time_parts, :convert_parsed_offset, :default_parser_hash, :default_parser_list, :new_from_parts, :parser_hash, :parser_list, :strptime_default
-    
+
     reset_parsers!
-    
+
     # Instance Methods
-    
+
     # This datetime's offset from UTC, in seconds.
     attr_reader :offset
     alias utc_offset offset
-    
+
     # Which parts of this datetime were guessed instead of being parsed from the input.
     attr_reader :not_parsed
 
@@ -269,9 +269,9 @@ module ThirdBase
       end
       super(opts)
     end
-    
+
     # Return a new datetune with the given number of days added to this datetime.  If d is a Float
-    # adds a fractional date, with possible loss of precision.  If d is an integer, 
+    # adds a fractional date, with possible loss of precision.  If d is an integer,
     # the returned date has the same time components as the current date. In both
     # cases, the offset for the new date is the same as for this date.
     def +(d)
@@ -287,7 +287,7 @@ module ThirdBase
         raise(TypeError, "d must be a Float or Integer")
       end
     end
-    
+
     # Return a new datetune with the given number of days subtracted from this datetime.
     # If d is a DateTime, returns the difference between the two datetimes as a Float,
     # considering both datetimes date, time, and offest.
@@ -301,7 +301,7 @@ module ThirdBase
         raise TypeError, "d should be #{self.class}, Float, or Integer"
       end
     end
-    
+
     # Compares two datetimes.  If the given datetime is an Integer, returns 1 unless
     # this datetime's time components are all 0, in which case it returns 0.
     # If the given datetime is a Float, calculates this date's julian date plus the
@@ -329,44 +329,44 @@ module ThirdBase
         raise TypeError, "d should be #{self.class}, Float, or Integer"
       end
     end
-    
+
     # Two DateTimes are equal only if their dates and time components are the same, not counting the offset.
     def ==(datetime)
       return false unless DateTime === datetime
-      super and hour == datetime.hour and min == datetime.min and sec == datetime.sec and usec == datetime.usec 
+      super and hour == datetime.hour and min == datetime.min and sec == datetime.sec and usec == datetime.usec
     end
     alias_method :eql?, :==
-    
-    # Returns the fraction of the day for this datetime (Noon is 0.5)
+
+      # Returns the fraction of the day for this datetime (Noon is 0.5)
     def fract
       @fract ||= (@hour*3600+@min*60+@sec+@usec/1000000.0)/86400.0
     end
-    
+
     # Returns the hour of this datetime.
     def hour
       @hour ||= time_parts[0]
     end
-    
+
     # Returns the minute of this datetime.
     def min
       @min ||= time_parts[1]
     end
-    
+
     # Returns the second of this datetime.
     def sec
       @sec ||= time_parts[2]
     end
-    
+
     # Returns the microsecond of this datetime.
     def usec
       @usec ||= time_parts[3]
     end
-    
+
     # Return the offset as a time zone string (+/-HHMM).
     def zone
       strftime('%Z')
     end
-    
+
     private
 
     def _strftime(v)
@@ -390,18 +390,18 @@ module ThirdBase
       else super(v)
       end
     end
-    
+
     def fract_to_hmsu(p)
       hour, p = (p.to_f*24).divmod(1)
       min, p = (p*60).divmod(1)
       sec, sec_fract = (p*60).divmod(1)
       [hour, min, sec, (sec_fract*1000000).to_i]
     end
-    
+
     def new_civil(y, m, d)
       self.class.new(y, m, d, hour, min, sec, usec, @offset)
     end
-    
+
     def new_jd(j)
       self.class.jd(j, hour, min, sec, usec, @offset)
     end
@@ -409,7 +409,7 @@ module ThirdBase
     def strftime_default
       '%Y-%m-%dT%H:%M:%S%Z'
     end
-    
+
     def time_parts
       unless @hour && @min && @sec && @usec
         @hour, @min, @sec, @usec = fract_to_hmsu(fract)

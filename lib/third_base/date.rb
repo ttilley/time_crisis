@@ -1,7 +1,7 @@
 # Top level module for holding ThirdBase classes.
 module ThirdBase
   # ThirdBase's date class, a simple class which, unlike the standard
-  # Date class, does not include any time information. 
+  # Date class, does not include any time information.
   #
   # This class is significantly faster than the standard Date class
   # for two reasons.  First, it does not depend on the Rational class
@@ -9,13 +9,13 @@ module ThirdBase
   # dates unless it is necessary.
   class Date
     include Comparable
-    
+
     MONTHNAMES = [nil] + %w(January February March April May June July August September October November December)
     ABBR_MONTHNAMES = [nil] + %w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
     MONTH_NUM_MAP = {}
     MONTHNAMES.each_with_index{|x, i| MONTH_NUM_MAP[x.downcase] = i if x}
     ABBR_MONTHNAMES.each_with_index{|x, i| MONTH_NUM_MAP[x.downcase] = i if x}
-    
+
     DAYNAMES = %w(Sunday Monday Tuesday Wednesday Thursday Friday Saturday)
     ABBR_DAYNAMES = %w(Sun Mon Tue Wed Thu Fri Sat)
     DAY_NUM_MAP = {}
@@ -26,13 +26,13 @@ module ThirdBase
     LEAP_CUMMULATIVE_MONTH_DAYS = {1=>0, 2=>31, 3=>60, 4=>91, 5=>121, 6=>152, 7=>182, 8=>213, 9=>244, 10=>274, 11=>305, 12=>335}
     DAYS_IN_MONTH = {1=>31, 2=>28, 3=>31, 4=>30, 5=>31, 6=>30, 7=>31, 8=>31, 9=>30, 10=>31, 11=>30, 12=>31}
     LEAP_DAYS_IN_MONTH = {1=>31, 2=>29, 3=>31, 4=>30, 5=>31, 6=>30, 7=>31, 8=>31, 9=>30, 10=>31, 11=>30, 12=>31}
-    
+
     MONTHNAME_RE_PATTERN = "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|january|february|march|april|may|june|july|august|september|october|november|december)"
     FULL_MONTHNAME_RE_PATTERN = "(january|february|march|april|may|june|july|august|september|october|november|december)"
     ABBR_MONTHNAME_RE_PATTERN = "(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)"
     FULL_DAYNAME_RE_PATTERN = "(sunday|monday|tuesday|wednesday|thursday|friday|saturday)"
     ABBR_DAYNAME_RE_PATTERN = "(sun|mon|tue|wed|thu|fri|sat)"
-      
+
     PARSER_LIST = []
     DEFAULT_PARSER_LIST = [:iso, :us, :num]
     PARSERS = {}
@@ -48,29 +48,29 @@ module ThirdBase
     DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d\d\d)\z}o, proc{|m| {:civil=>[m[3].to_i, m[2].to_i, m[1].to_i]}}],
       [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)\z}o, proc{|m| {:civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i]}}]]
     DEFAULT_PARSERS[:num] = [[%r{\A\d{2,8}\z}o, proc do |m|
-        m = m[0]
-        case m.length
-        when 2
-          t = Time.now
-          {:civil=>[t.year, t.mon, m.to_i]}
-        when 3
-          {:ordinal=>[Time.now.year, m.to_i]}
-        when 4
-          {:civil=>[Time.now.year, m[0..1].to_i, m[2..3].to_i]}
-        when 5
-          {:ordinal=>[two_digit_year(m[0..1]), m[2..4].to_i]}
-        when 6
-          {:civil=>[two_digit_year(m[0..1]), m[2..3].to_i, m[4..5].to_i]}
-        when 7
-          {:ordinal=>[m[0..3].to_i, m[4..6].to_i]}
-        when 8
-          {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
+          m = m[0]
+          case m.length
+          when 2
+            t = Time.now
+            {:civil=>[t.year, t.mon, m.to_i]}
+          when 3
+            {:ordinal=>[Time.now.year, m.to_i]}
+          when 4
+            {:civil=>[Time.now.year, m[0..1].to_i, m[2..3].to_i]}
+          when 5
+            {:ordinal=>[two_digit_year(m[0..1]), m[2..4].to_i]}
+          when 6
+            {:civil=>[two_digit_year(m[0..1]), m[2..3].to_i, m[4..5].to_i]}
+          when 7
+            {:ordinal=>[m[0..3].to_i, m[4..6].to_i]}
+          when 8
+            {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
+          end
         end
-      end
       ]]
-      
+
     STRFTIME_RE = /%./o
-      
+
     STRPTIME_PROC_A = proc{|h,x| h[:cwday] = DAY_NUM_MAP[x.downcase]}
     STRPTIME_PROC_B = proc{|h,x| h[:month] = MONTH_NUM_MAP[x.downcase]}
     STRPTIME_PROC_C = proc{|h,x| h[:year] ||= x.to_i*100}
@@ -83,15 +83,15 @@ module ThirdBase
     STRPTIME_PROC_V = proc{|h,x| h[:cweek] = x.to_i}
     STRPTIME_PROC_y = proc{|h,x| h[:year] = two_digit_year(x)}
     STRPTIME_PROC_Y = proc{|h,x| h[:year] = x.to_i}
-    
+
     UNIXEPOCH = 2440588
-    
+
     # Public Class Methods
-    
+
     class << self
       alias new! new
     end
-    
+
     # Add a parser to the parser type. Arguments:
     # * type - The parser type to which to add the parser, should be a Symbol.
     # * pattern - Can be either a Regexp or String:
@@ -100,7 +100,7 @@ module ThirdBase
     #     operate identically to strptime.
     #   * Regexp - The regular expression is used directly.  In this case, a block must be provided,
     #     or an error is raised.
-    # 
+    #
     # The block, if provided, should take a single MatchData argument.  It should return
     # nil if it cannot successfully parse the string, an instance of this class,  or a hash of
     # values to be passed to new!.
@@ -113,40 +113,40 @@ module ThirdBase
       end
       parser_hash[type].unshift([pattern, block])
     end
-    
+
     # Add a parser type to the list of parser types.
     # Should be used if you want to add your own parser
     # types.
     def self.add_parser_type(type)
       parser_hash[type] ||= []
     end
-    
+
     # Returns a new Date with the given year, month, and day.
     def self.civil(year, mon, day)
       new!(:civil=>[year, mon, day])
     end
-    
+
     # Returns a new Date with the given commercial week year,
     # commercial week, and commercial week day.
     def self.commercial(cwyear, cweek, cwday=5)
       new!(:commercial=>[cwyear, cweek, cwday])
     end
-    
+
     # Returns a new Date with the given julian date.
     def self.jd(j)
       new!(:jd=>j)
     end
-    
+
     # Calls civil with the given arguments.
     def self.new(*args)
       civil(*args)
     end
-    
+
     # Returns a new Date with the given year and day of year.
     def self.ordinal(year, yday)
       new!(:ordinal=>[year, yday])
     end
-    
+
     # Parses the given string and returns a Date.  Raises an ArgumentError if no
     # parser can correctly parse the date. Takes the following options:
     #
@@ -164,7 +164,7 @@ module ThirdBase
       end
       raise ArgumentError, 'invalid date'
     end
-    
+
     # Reset the parsers, parser types, and order of parsers used to the default.
     def self.reset_parsers!
       parser_hash.clear
@@ -176,7 +176,7 @@ module ThirdBase
       end
       use_parsers(*default_parser_list)
     end
-    
+
     # Parse the string using the provided format (or the default format).
     # Raises an ArgumentError if the format does not match the string.
     def self.strptime(str, fmt=strptime_default)
@@ -194,14 +194,14 @@ module ThirdBase
       t = Time.now
       civil(t.year, t.mon, t.day)
     end
-    
+
     # Set the order of parser types to use to the given parser types.
     def self.use_parsers(*parsers)
       parser_list.replace(parsers)
     end
-    
+
     # Private Class Methods
-    
+
     def self._expand_strptime_format(v)
       case v
       when '%D', '%x' then '%m/%d/%y'
@@ -234,19 +234,19 @@ module ThirdBase
       else ["%#{v}"]
       end
     end
-    
+
     def self.default_parser_hash
       DEFAULT_PARSERS
     end
-    
+
     def self.default_parser_list
       DEFAULT_PARSER_LIST
     end
-    
+
     def self.expand_strptime_format(fmt)
       fmt.gsub(STRFTIME_RE){|x| _expand_strptime_format(x)}
     end
-    
+
     def self.new_from_parts(date_hash)
       d = today
       if date_hash[:year] || date_hash[:yday] || date_hash[:month] || date_hash[:day]
@@ -261,15 +261,15 @@ module ThirdBase
         raise ArgumentError, 'invalid date'
       end
     end
-    
+
     def self.parser_hash
       PARSERS
     end
-    
+
     def self.parser_list
       PARSER_LIST
     end
-    
+
     def self.parsers(parser_families=nil)
       (parser_families||parser_list).each do |parser_family|
         parsers_for_family(parser_family) do |pattern, block|
@@ -277,17 +277,17 @@ module ThirdBase
         end
       end
     end
-    
+
     def self.parsers_for_family(parser_family)
       parser_hash[parser_family].each do |pattern, block|
         yield(pattern, block)
       end
     end
-    
+
     def self.strptime_default
       '%Y-%m-%d'
     end
-    
+
     def self.strptime_pattern_and_block(fmt)
       blocks = []
       pattern = Regexp.escape(expand_strptime_format(fmt)).gsub(STRFTIME_RE) do |x|
@@ -304,7 +304,7 @@ module ThirdBase
       end
       [/\A#{pattern}\z/i, block]
     end
-    
+
     def self.two_digit_year(y)
       y = if y.length == 2
         y = y.to_i
@@ -313,13 +313,13 @@ module ThirdBase
         y.to_i
       end
     end
-    
+
     private_class_method :_expand_strptime_format, :_strptime_part, :default_parser_hash, :default_parser_list, :expand_strptime_format, :new_from_parts, :parser_hash, :parser_list, :parsers, :parsers_for_family, :strptime_default, :strptime_pattern_and_block, :two_digit_year
-    
+
     reset_parsers!
-    
+
     # Public Instance Methods
-    
+
     # Called by Date.new!, Takes a hash with one of the following keys:
     #
     # * :civil : should be an array with 3 elements, a year, month, and day
@@ -345,13 +345,13 @@ module ThirdBase
         raise(ArgumentError, "invalid date format")
       end
     end
-    
+
     # Returns a new date with d number of days added to this date.
     def +(d)
       raise(TypeError, "d must be an integer") unless d.is_a?(Integer)
       jd_to_civil(jd + d)
     end
-    
+
     # Returns a new date with d number of days subtracted from this date.
     # If d is a Date, returns the number of days between the two dates.
     def -(d)
@@ -363,7 +363,7 @@ module ThirdBase
         raise TypeError, "d should be #{self.class} or Integer"
       end
     end
-    
+
     # Returns a new date with m number of months added to this date.
     # If the day of self does not exist in the new month, set the
     # new day to be the last day of the new month.
@@ -384,12 +384,12 @@ module ThirdBase
       d = day > ndays ? ndays : day
       new_civil(y, n, d)
     end
-    
+
     # Returns a new date with m number of months subtracted from this date.
     def <<(m)
       self >> -m
     end
-    
+
     # Compare two dates.  If the given date is greater than self, return -1, if it is less,
     # return 1, and if it is equal, return 0.  If given date is a number, compare this date's julian
     # date to it.
@@ -401,15 +401,15 @@ module ThirdBase
         d
       end
     end
-    
+
     # Dates are equel only if their year, month, and day match.
     def ==(date)
       return false unless Date === date
       year == date.year and mon == date.mon and day == date.day
     end
     alias_method :eql?, :==
-    
-    # If d is a date, only true if it is equal to this date.  If d is Numeric, only true if it equals this date's julian date.
+
+      # If d is a date, only true if it is equal to this date.  If d is Numeric, only true if it equals this date's julian date.
     def ===(d)
       case d
       when Numeric then jd == d
@@ -417,48 +417,48 @@ module ThirdBase
       else false
       end
     end
-    
+
     # The commercial week day for this date.
     def cwday
       @cwday || commercial[2]
     end
-    
+
     # The commercial week for this date.
     def cweek
       @cweek || commercial[1]
     end
-    
+
     # The commercial week year for this date.
     def cwyear
       @cwyear || commercial[0]
     end
-    
+
     # The day of the month for this date.
     def day
       @day || civil[2]
     end
     alias mday day
-    
+
     # Yield every date between this date and given date to the block. The
     # given date should be less than this date.
     def downto(d, &block)
       step(d, -1, &block)
     end
-    
+
     # Unique value for this date, based on it's year, month, and day of month.
     def hash
       civil.hash
     end
-    
+
     # Programmer friendly readable string, much more friendly than the one
     # in the standard date class.
     def inspect
       "#<#{self.class} #{self}>"
     end
-    
+
     # This date's julian date.
     def jd
-      @jd ||= ( 
+      @jd ||= (
         y = year
         m = mon
         d = day
@@ -477,13 +477,13 @@ module ThirdBase
     def leap?
       _leap?(year)
     end
-    
+
     # The month number for this date (January is 1, December is 12).
     def mon
       @mon || civil[1]
     end
     alias month mon
-    
+
     # Yield each date between this date and limit, adding step number
     # of days in each iteration.  Returns current date.
     def step(limit, step=1)
@@ -495,18 +495,18 @@ module ThirdBase
       end
       self
     end
-    
+
     # Format the time using a format string, or the default format string.
     def strftime(fmt=strftime_default)
       fmt.gsub(STRFTIME_RE){|x| _strftime(x[1..1])}
     end
-    
+
     # Return the day after this date.
     def succ
       self + 1
     end
     alias next succ
-    
+
     # Alias for strftime with the default format
     def to_s
       strftime
@@ -517,25 +517,25 @@ module ThirdBase
     def upto(d, &block)
       step(d, &block)
     end
-    
+
     # Return the day of the week for this date.  Sunday is 0, Saturday is 6.
     def wday
       (jd + 1) % 7
     end
-    
+
     # Return the day of the year for this date. January 1 is 1.
     def yday
       h = leap? ? LEAP_CUMMULATIVE_MONTH_DAYS : CUMMULATIVE_MONTH_DAYS
       @yday ||= h[mon] + day
     end
-    
+
     # Return the year for this date.
     def year
       @year || civil[0]
     end
-    
+
     protected
-    
+
     def civil
       unless @year && @mon && @day
         if @year && @yday
@@ -549,7 +549,7 @@ module ThirdBase
       end
       [@year, @mon, @day]
     end
-    
+
     def commercial
       unless @cwyear && @cweek && @cwday
         a = jd_to_civil(jd - 3).year
@@ -560,13 +560,13 @@ module ThirdBase
       end
       [@cwyear, @cweek, @cwday]
     end
-    
+
     def ordinal
       [year, yday]
     end
-    
+
     private
-    
+
     def _leap?(year)
       if year % 400 == 0
         true
@@ -578,7 +578,7 @@ module ThirdBase
         false
       end
     end
-    
+
     def _strftime(v)
       case v
       when '%' then '%'
@@ -610,20 +610,20 @@ module ThirdBase
       else "%#{v}"
       end
     end
-    
+
     def commercial_to_jd(y, w, d)
       jd = new_civil(y, 1, 4).jd
       jd - (jd % 7) + 7 * (w - 1) + (d - 1)
     end
-    
+
     def days_in_month(m=nil, y=nil)
       (_leap?(y||year) ? LEAP_DAYS_IN_MONTH : DAYS_IN_MONTH)[m||mon]
     end
-    
+
     def jd_to_civil(jd)
       new_civil(*jd_to_ymd(jd))
     end
-    
+
     def jd_to_ymd(jd)
       x = ((jd - 1867216.25) / 36524.25).floor
       a = jd + 1 + x - (x / 4.0).floor
@@ -641,42 +641,42 @@ module ThirdBase
       end
       [y, m, dom]
     end
-    
+
     def julian_jd?(jd)
       jd < 2299161
     end
-    
+
     def last_yday
       leap? ? 366 : 365
     end
-    
+
     def month_day_from_yday
       yday = @yday
       y = @year
       h = leap? ? LEAP_CUMMULATIVE_MONTH_DAYS : CUMMULATIVE_MONTH_DAYS
       12.downto(0) do |i|
         if (c = h[i]) < yday
-          return [i, yday - c] 
+          return [i, yday - c]
         end
       end
     end
-    
+
     def new_civil(y, m, d)
       self.class.new(y, m, d)
     end
-    
+
     def new_jd(j)
       self.class.jd(jd)
     end
-    
+
     def strftime_default
       '%Y-%m-%d'
     end
-    
+
     def valid_civil?
       day >= 1 and day <= days_in_month(mon) and mon >= 1 and mon <= 12
     end
-    
+
     def valid_commercial?
       if cwday >= 1 and cwday <= 7 and cweek >= 1 and cweek <= 53
         new_jd(jd).commercial == commercial
@@ -684,11 +684,11 @@ module ThirdBase
         false
       end
     end
-    
+
     def valid_ordinal?
       yday >= 1 and yday <= (_leap?(year) ? 366 : 365)
     end
-    
+
     def yday_from_month_day
       CUMMULATIVE_MONTH_DAYS[mon] + day + ((month > 2 and leap?) ? 1 : 0)
     end
