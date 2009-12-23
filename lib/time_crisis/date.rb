@@ -1,7 +1,9 @@
-# Top level module for holding ThirdBase classes.
-module ThirdBase
-  # ThirdBase's date class, a simple class which, unlike the standard
-  # Date class, does not include any time information.
+require 'time_crisis/time'
+
+module TimeCrisis
+  # TimeCrisis's date class, a simple class which, unlike the standard
+  # Date class, does not include any time information. Taken from
+  # ThirdBase by Jeremy Evans.
   #
   # This class is significantly faster than the standard Date class
   # for two reasons.  First, it does not depend on the Rational class
@@ -37,17 +39,17 @@ module ThirdBase
     DEFAULT_PARSER_LIST = [:iso, :us, :num]
     PARSERS = {}
     DEFAULT_PARSERS = {}
-    DEFAULT_PARSERS[:iso] = [[%r{\A(-?\d{4})[-./ ](\d\d)[-./ ](\d\d)\z}o, proc{|m| {:civil=>[m[1].to_i, m[2].to_i, m[3].to_i]}}]]
-    DEFAULT_PARSERS[:us] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d(?:\d\d)?)\z}o, proc{|m| {:civil=>[two_digit_year(m[3]), m[1].to_i, m[2].to_i]}}],
-      [%r{\A(\d\d?)/(\d?\d)\z}o, proc{|m| {:civil=>[Time.now.year, m[1].to_i, m[2].to_i]}}],
-      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?,?(?:[-./ ](-?(?:\d\d(?:\d\d)?)))?\z}io, proc{|m| {:civil=>[m[3] ? two_digit_year(m[3]) : Time.now.year, MONTH_NUM_MAP[m[1].downcase], m[2].to_i]}}],
-      [%r{\A(\d\d?)(?:st|nd|rd|th)?[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})\z}io, proc{|m| {:civil=>[m[3].to_i, MONTH_NUM_MAP[m[2].downcase], m[1].to_i]}}],
-      [%r{\A(-?\d{4})[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?\z}io, proc{|m| {:civil=>[m[1].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]}}],
-      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})\z}io, proc{|m| {:civil=>[m[2].to_i, MONTH_NUM_MAP[m[1].downcase], 1]}}],
-      [%r{\A#{ABBR_DAYNAME_RE_PATTERN} #{ABBR_MONTHNAME_RE_PATTERN} (\d\d?) (-?\d{4})\z}io, proc{|m| {:civil=>[m[4].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]}}]]
-    DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d\d\d)\z}o, proc{|m| {:civil=>[m[3].to_i, m[2].to_i, m[1].to_i]}}],
-      [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)\z}o, proc{|m| {:civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i]}}]]
-    DEFAULT_PARSERS[:num] = [[%r{\A\d{2,8}\z}o, proc do |m|
+    DEFAULT_PARSERS[:iso] = [[%r{\A(-?\d{4})[-./ ](\d\d)[-./ ](\d\d)\z}o, proc {|m| {:civil=>[m[1].to_i, m[2].to_i, m[3].to_i]}}]]
+    DEFAULT_PARSERS[:us] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d(?:\d\d)?)\z}o, proc {|m| {:civil=>[two_digit_year(m[3]), m[1].to_i, m[2].to_i]}}],
+      [%r{\A(\d\d?)/(\d?\d)\z}o, proc {|m| {:civil=>[Time.now.year, m[1].to_i, m[2].to_i]}}],
+      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?,?(?:[-./ ](-?(?:\d\d(?:\d\d)?)))?\z}io, proc {|m| {:civil=>[m[3] ? two_digit_year(m[3]) : Time.now.year, MONTH_NUM_MAP[m[1].downcase], m[2].to_i]}}],
+      [%r{\A(\d\d?)(?:st|nd|rd|th)?[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})\z}io, proc {|m| {:civil=>[m[3].to_i, MONTH_NUM_MAP[m[2].downcase], m[1].to_i]}}],
+      [%r{\A(-?\d{4})[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?\z}io, proc {|m| {:civil=>[m[1].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]}}],
+      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})\z}io, proc {|m| {:civil=>[m[2].to_i, MONTH_NUM_MAP[m[1].downcase], 1]}}],
+      [%r{\A#{ABBR_DAYNAME_RE_PATTERN} #{ABBR_MONTHNAME_RE_PATTERN} (\d\d?) (-?\d{4})\z}io, proc {|m| {:civil=>[m[4].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]}}]]
+    DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d\d\d)\z}o, proc {|m| {:civil=>[m[3].to_i, m[2].to_i, m[1].to_i]}}],
+      [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)\z}o, proc {|m| {:civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i]}}]]
+    DEFAULT_PARSERS[:num] = [[%r{\A\d{2,8}\z}o, proc {|m|
           m = m[0]
           case m.length
           when 2
@@ -66,23 +68,23 @@ module ThirdBase
           when 8
             {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
           end
-        end
+        }
       ]]
 
     STRFTIME_RE = /%./o
 
-    STRPTIME_PROC_A = proc{|h,x| h[:cwday] = DAY_NUM_MAP[x.downcase]}
-    STRPTIME_PROC_B = proc{|h,x| h[:month] = MONTH_NUM_MAP[x.downcase]}
-    STRPTIME_PROC_C = proc{|h,x| h[:year] ||= x.to_i*100}
-    STRPTIME_PROC_d = proc{|h,x| h[:day] = x.to_i}
-    STRPTIME_PROC_G = proc{|h,x| h[:cwyear] = x.to_i}
-    STRPTIME_PROC_g = proc{|h,x| h[:cwyear] = two_digit_year(x)}
-    STRPTIME_PROC_j = proc{|h,x| h[:yday] = x.to_i}
-    STRPTIME_PROC_m = proc{|h,x| h[:month] = x.to_i}
-    STRPTIME_PROC_u = proc{|h,x| h[:cwday] = x.to_i}
-    STRPTIME_PROC_V = proc{|h,x| h[:cweek] = x.to_i}
-    STRPTIME_PROC_y = proc{|h,x| h[:year] = two_digit_year(x)}
-    STRPTIME_PROC_Y = proc{|h,x| h[:year] = x.to_i}
+    STRPTIME_PROC_A = proc {|h,x| h[:cwday] = DAY_NUM_MAP[x.downcase]}
+    STRPTIME_PROC_B = proc {|h,x| h[:month] = MONTH_NUM_MAP[x.downcase]}
+    STRPTIME_PROC_C = proc {|h,x| h[:year] ||= x.to_i*100}
+    STRPTIME_PROC_d = proc {|h,x| h[:day] = x.to_i}
+    STRPTIME_PROC_G = proc {|h,x| h[:cwyear] = x.to_i}
+    STRPTIME_PROC_g = proc {|h,x| h[:cwyear] = two_digit_year(x)}
+    STRPTIME_PROC_j = proc {|h,x| h[:yday] = x.to_i}
+    STRPTIME_PROC_m = proc {|h,x| h[:month] = x.to_i}
+    STRPTIME_PROC_u = proc {|h,x| h[:cwday] = x.to_i}
+    STRPTIME_PROC_V = proc {|h,x| h[:cweek] = x.to_i}
+    STRPTIME_PROC_y = proc {|h,x| h[:year] = two_digit_year(x)}
+    STRPTIME_PROC_Y = proc {|h,x| h[:year] = x.to_i}
 
     UNIXEPOCH = 2440588
 

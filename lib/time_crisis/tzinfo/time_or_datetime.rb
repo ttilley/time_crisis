@@ -21,7 +21,7 @@ module TimeCrisis
           @orig = @time
         elsif timeOrDateTime.is_a?(::TimeCrisis::DateTime)
           @tcdatetime = timeOrDateTime
-          @tcdatetime.offset = 0
+          @tcdatetime = @tcdatetime.new_offset(0) unless @tcdatetime.offset == 0
           @orig = @tcdatetime
         elsif timeOrDateTime.is_a?(::DateTime)
           @datetime = timeOrDateTime

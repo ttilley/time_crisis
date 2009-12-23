@@ -1,8 +1,9 @@
-require 'third_base/date'
+require 'time_crisis/date'
 
-module ThirdBase
-  # ThirdBase's DateTime class, which builds on the Date class and adds a time component of
-  # hours, minutes, seconds, microseconds, and an offset from UTC.
+module TimeCrisis
+  # TimeCrisis's DateTime class, which builds on the Date class and adds a time component of
+  # hours, minutes, seconds, microseconds, and an offset from UTC. Taken from ThirdBase by
+  # Jeremy Evans.
   class DateTime < Date
     TIME_ZONE_SECOND_OFFSETS = {
       'UTC'=>0, 'Z'=>0, 'UT'=>0, 'GMT'=>0,
@@ -14,23 +15,23 @@ module ThirdBase
     DEFAULT_PARSERS = {}
     TIME_ZONE_RE_STRING = "(#{TIME_ZONE_SECOND_OFFSETS.keys.sort.join('|')}|[+-](?:\\d\\d:?(?:\\d\\d)?))"
     TIME_RE_STRING = "(?:[T ]?([\\d ]?\\d):(\\d\\d)(?::(\\d\\d(\\.\\d+)?))?([ap]m?)? ?#{TIME_ZONE_RE_STRING}?)?"
-    DEFAULT_PARSERS[:time] = [[%r{\A#{TIME_RE_STRING}\z}io, proc do |m|
+    DEFAULT_PARSERS[:time] = [[%r{\A#{TIME_RE_STRING}\z}io, proc {|m|
           unless m[0] == ''
             t = Time.now
             add_parsed_time_parts(m, {:civil=>[t.year, t.mon, t.day], :not_parsed=>[:year, :mon, :mday]}, 1)
           end
-        end]]
-    DEFAULT_PARSERS[:iso] = [[%r{\A(-?\d{4})[-./ ](\d\d)[-./ ](\d\d)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[1].to_i, m[2].to_i, m[3].to_i])}]]
-    DEFAULT_PARSERS[:us] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d(?:\d\d)?)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[3]), m[1].to_i, m[2].to_i])}],
-      [%r{\A(\d\d?)/(\d?\d)#{TIME_RE_STRING}\z}o, proc{|m| add_parsed_time_parts(m, {:civil=>[Time.now.year, m[1].to_i, m[2].to_i], :not_parsed=>:year}, 3)}],
-      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?,?(?:[-./ ](-?(?:\d\d(?:\d\d)?)))?#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[3] ? two_digit_year(m[3]) : Time.now.year, MONTH_NUM_MAP[m[1].downcase], m[2].to_i], :not_parsed=>m[3] ? [] : [:year])}],
-      [%r{\A(\d\d?)(?:st|nd|rd|th)?[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[3].to_i, MONTH_NUM_MAP[m[2].downcase], m[1].to_i])}],
-      [%r{\A(-?\d{4})[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[1].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i])}],
-      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, {:civil=>[m[2].to_i, MONTH_NUM_MAP[m[1].downcase], 1]}, 3)}],
-      [%r{\A#{ABBR_DAYNAME_RE_PATTERN} #{ABBR_MONTHNAME_RE_PATTERN} (\d\d?) #{TIME_RE_STRING} (-?\d{4})\z}io, proc{|m| add_parsed_time_parts(m, {:civil=>[m[10].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]})}]]
-    DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d{4})#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[m[3].to_i, m[2].to_i, m[1].to_i])}],
-      [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)#{TIME_RE_STRING}\z}io, proc{|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i])}]]
-    DEFAULT_PARSERS[:num] = [[%r{\A(\d{2,8})#{TIME_RE_STRING}\z}io, proc do |n|
+        }]]
+    DEFAULT_PARSERS[:iso] = [[%r{\A(-?\d{4})[-./ ](\d\d)[-./ ](\d\d)#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[m[1].to_i, m[2].to_i, m[3].to_i])}]]
+    DEFAULT_PARSERS[:us] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d\d(?:\d\d)?)#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[3]), m[1].to_i, m[2].to_i])}],
+      [%r{\A(\d\d?)/(\d?\d)#{TIME_RE_STRING}\z}o, proc {|m| add_parsed_time_parts(m, {:civil=>[Time.now.year, m[1].to_i, m[2].to_i], :not_parsed=>:year}, 3)}],
+      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?,?(?:[-./ ](-?(?:\d\d(?:\d\d)?)))?#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[m[3] ? two_digit_year(m[3]) : Time.now.year, MONTH_NUM_MAP[m[1].downcase], m[2].to_i], :not_parsed=>m[3] ? [] : [:year])}],
+      [%r{\A(\d\d?)(?:st|nd|rd|th)?[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[m[3].to_i, MONTH_NUM_MAP[m[2].downcase], m[1].to_i])}],
+      [%r{\A(-?\d{4})[-./ ]#{MONTHNAME_RE_PATTERN}[-./ ](\d\d?)(?:st|nd|rd|th)?#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[m[1].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i])}],
+      [%r{\A#{MONTHNAME_RE_PATTERN}[-./ ](-?\d{4})#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, {:civil=>[m[2].to_i, MONTH_NUM_MAP[m[1].downcase], 1]}, 3)}],
+      [%r{\A#{ABBR_DAYNAME_RE_PATTERN} #{ABBR_MONTHNAME_RE_PATTERN} (\d\d?) #{TIME_RE_STRING} (-?\d{4})\z}io, proc {|m| add_parsed_time_parts(m, {:civil=>[m[10].to_i, MONTH_NUM_MAP[m[2].downcase], m[3].to_i]})}]]
+    DEFAULT_PARSERS[:eu] = [[%r{\A(\d\d?)[-./ ](\d\d?)[-./ ](\d{4})#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[m[3].to_i, m[2].to_i, m[1].to_i])}],
+      [%r{\A(\d\d?)[-./ ](\d?\d)[-./ ](\d?\d)#{TIME_RE_STRING}\z}io, proc {|m| add_parsed_time_parts(m, :civil=>[two_digit_year(m[1]), m[2].to_i, m[3].to_i])}]]
+    DEFAULT_PARSERS[:num] = [[%r{\A(\d{2,8})#{TIME_RE_STRING}\z}io, proc {|n|
           m = n[1]
           add_parsed_time_parts(n, (
               case m.length
@@ -51,20 +52,19 @@ module ThirdBase
                 {:civil=>[m[0..3].to_i, m[4..5].to_i, m[6..7].to_i]}
               end
             ), 2)
-        end
-      ]]
+        }]]
 
-    STRPTIME_PROC_H = proc{|h,x| h[:hour] = x.to_i}
-    STRPTIME_PROC_M = proc{|h,x| h[:min] = x.to_i}
-    STRPTIME_PROC_P = proc{|h,x| h[:meridian] = x.downcase == 'pm' ? :pm : :am}
-    STRPTIME_PROC_S = proc{|h,x| h[:sec] = x.to_i}
-    STRPTIME_PROC_s = proc do |h,x|
+    STRPTIME_PROC_H = proc {|h,x| h[:hour] = x.to_i}
+    STRPTIME_PROC_M = proc {|h,x| h[:min] = x.to_i}
+    STRPTIME_PROC_P = proc {|h,x| h[:meridian] = x.downcase == 'pm' ? :pm : :am}
+    STRPTIME_PROC_S = proc {|h,x| h[:sec] = x.to_i}
+    STRPTIME_PROC_s = proc {|h,x|
       j, i = x.to_i.divmod(86400)
       hours, i = i.divmod(3600)
       minutes, seconds = i.divmod(60)
       h.merge!(:jd=>j+UNIXEPOCH, :hour=>hours, :min=>minutes, :sec=>seconds)
-    end
-    STRPTIME_PROC_z = proc{|h,x| h[:offset] = convert_parsed_offset(x)}
+    }
+    STRPTIME_PROC_z = proc {|h,x| h[:offset] = convert_parsed_offset(x)}
 
     # Public Class Methods
 
@@ -243,12 +243,21 @@ module ThirdBase
     attr_reader :offset
     alias utc_offset offset
 
+    # compatibility method for TZInfo
+    def new_offset(of)
+      if of < 0
+        of = 1 + of
+      end
+      
+      self.class.new!(:jd=>jd, :parts=>[hour, min, sec, usec], :offset=>(of * 86400))
+    end
+
     # Which parts of this datetime were guessed instead of being parsed from the input.
     attr_reader :not_parsed
 
     # Called by DateTime.new!, should be a hash with the following possible keys:
     #
-    # * :civil, :commericial, :jd, :ordinal : See ThirdBase::Date#initialize
+    # * :civil, :commericial, :jd, :ordinal : See TimeCrisis::Date#initialize
     # * :fract : The fraction of the day (0.5 is Noon)
     # * :offset : offset from UTC, in seconds.
     # * :parts : an array with 4 elements, hour, minute, second, and microsecond
@@ -275,16 +284,16 @@ module ThirdBase
     # the returned date has the same time components as the current date. In both
     # cases, the offset for the new date is the same as for this date.
     def +(d)
-      case d
-      when Float
+      case
+      when d.is_a?(Integer)
+        new_jd(jd+d)
+      when d.respond_to?(:to_f)
         d, f = d.to_f.divmod(1)
         f = fract + f
         m, f = f.divmod(1)
         self.class.jd_fract(jd+d+m, f, @offset)
-      when Integer
-        new_jd(jd+d)
       else
-        raise(TypeError, "d must be a Float or Integer")
+        raise TypeError, "d must be an Integer or respond to :to_f"
       end
     end
 
@@ -292,13 +301,15 @@ module ThirdBase
     # If d is a DateTime, returns the difference between the two datetimes as a Float,
     # considering both datetimes date, time, and offest.
     def -(d)
-      case d
-      when self.class
+      case
+      when d.is_a?(::TimeCrisis::DateTime)
         (jd - d.jd) + (fract - d.fract) + (@offset - d.offset)/86400.0
-      when Integer, Float
+      when d.is_a?(Integer)
         self + -d
+      when d.respond_to?(:to_f)
+        self + -(d.to_f)
       else
-        raise TypeError, "d should be #{self.class}, Float, or Integer"
+        raise TypeError, "d should be a TimeCrisis::DateTime, Integer, or respond to :to_f"
       end
     end
 
@@ -308,25 +319,25 @@ module ThirdBase
     # date fraction and compares it to the given datetime, and returns 0 only if the
     # two are very close together. This code does not take into account time offsets.
     def <=>(datetime)
-      case datetime
-      when Integer
+      case
+      when datetime.is_a?(::TimeCrisis::DateTime)
+        ((d = super) == 0) && ((d = (hour <=> datetime.hour)) == 0) && ((d = (min <=> datetime.min)) == 0) && ((d = (sec <=> datetime.sec)) == 0) && ((d = (usec <=> datetime.usec)) == 0)
+        d
+      when datetime.is_a?(Integer)
         if ((d = (jd <=> datetime)) == 0)
           (hour == 0 and min == 0 and sec == 0 and usec == 0) ? 0 : 1
         else
           d
         end
-      when Float
-        diff = jd+fract - datetime
+      when datetime.respond_to?(:to_f)
+        diff = jd+fract - datetime.to_f
         if diff.abs <= 1.15740740740741e-011
           0
         else
           diff > 0.0 ? 1 : -1
         end
-      when self.class
-        ((d = super) == 0) && ((d = (hour <=> datetime.hour)) == 0) && ((d = (min <=> datetime.min)) == 0) && ((d = (sec <=> datetime.sec)) == 0) && ((d = (usec <=> datetime.usec)) == 0)
-        d
       else
-        raise TypeError, "d should be #{self.class}, Float, or Integer"
+        raise TypeError, "d should be a TimeCrisis::DateTime, Integer, or respond to :to_f"
       end
     end
 
