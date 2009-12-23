@@ -1,10 +1,5 @@
-begin
-  require 'date'
-rescue LoadError
-end
-
-::Date = Class.new unless defined?(::Date)
-::DateTime = Class.new unless defined?(::DateTime)
+require 'date'
+require 'time'
 
 require 'third_base'
 TimeCrisis = ThirdBase

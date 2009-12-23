@@ -1,4 +1,3 @@
-require 'time'
 require 'time_crisis/tzinfo/offset_rationals'
 
 module TimeCrisis
