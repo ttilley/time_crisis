@@ -12,12 +12,18 @@ module TimeCrisis
       # ignored.
       def initialize(timeOrDateTime)
         @time = nil
+        @tctime = nil
         @datetime = nil
+        @tcdatetime = nil
         @timestamp = nil
 
-        if timeOrDateTime.is_a?(Time)
+        if timeOrDateTime.is_a?(::TimeCrisis::Time)
+          @tctime = timeOrDateTime
+          @tctime = ::TimeCrisis::Time.utc(@tctime.year, @tctime.mon, @tctime.mday, @tctime.hour, @tctime.min, @tctime.sec) unless @tctime.zone == 'UTC'
+          @orig = @tctime
+        elsif timeOrDateTime.is_a?(::Time)
           @time = timeOrDateTime
-          @time = Time.utc(@time.year, @time.mon, @time.mday, @time.hour, @time.min, @time.sec) unless @time.zone == 'UTC'
+          @time = ::Time.utc(@time.year, @time.mon, @time.mday, @time.hour, @time.min, @time.sec) unless @time.zone == 'UTC'
           @orig = @time
         elsif timeOrDateTime.is_a?(::TimeCrisis::DateTime)
           @tcdatetime = timeOrDateTime
@@ -37,13 +43,25 @@ module TimeCrisis
       def to_time
         unless @time
           if @timestamp
-            @time = Time.at(@timestamp).utc
+            @time = ::Time.at(@timestamp).utc
           else
-            @time = Time.utc(year, mon, mday, hour, min, sec)
+            @time = ::Time.utc(year, mon, mday, hour, min, sec)
           end
         end
 
         @time
+      end
+      
+      def to_tc_time
+        unless @tctime
+          if @timestamp
+            @tctime = ::TimeCrisis::Time.at(@timestamp).utc
+          else
+            @tctime = ::Time.utc(year, mon, mday, hour, min, sec)
+          end
+        end
+        
+        @tctime
       end
 
       # Returns the time as a DateTime.
@@ -67,7 +85,7 @@ module TimeCrisis
       # Returns the time as an integer timestamp.
       def to_i
         unless @timestamp
-          @timestamp = to_time.to_i
+          @timestamp = to_tc_time.to_i
         end
 
         @timestamp
@@ -80,7 +98,9 @@ module TimeCrisis
 
       # Returns a string representation of the TimeOrDateTime.
       def to_s
-        if @orig.is_a?(Time)
+        if @orig.is_a?(::TimeCrisis::Time)
+          "TimeCrisis::Time: #{@orig.to_s}"
+        elsif @orig.is_a?(::Time)
           "Time: #{@orig.to_s}"
         elsif @orig.is_a?(::TimeCrisis::DateTime)
           "TimeCrisis::DateTime: #{@orig.to_s}"
@@ -98,27 +118,31 @@ module TimeCrisis
 
       # Returns the year.
       def year
-        if @time
+        if @tctime
+          @tctime.year
+        elsif @time
           @time.year
         elsif @datetime
           @datetime.year
         elsif @tcdatetime
           @tcdatetime.year
         else
-          to_time.year
+          to_tc_time.year
         end
       end
 
       # Returns the month of the year (1..12).
       def mon
-        if @time
+        if @tctime
+          @tctime.mon
+        elsif @time
           @time.mon
         elsif @datetime
           @datetime.mon
         elsif @tcdatetime
           @tcdatetime.mon
         else
-          to_time.mon
+          to_tc_time.mon
         end
       end
 
@@ -126,14 +150,16 @@ module TimeCrisis
 
       # Returns the day of the month (1..n).
       def mday
-        if @time
+        if @tctime
+          @tctime.mday
+        elsif @time
           @time.mday
         elsif @datetime
           @datetime.mday
         elsif @tcdatetime
           @tcdatetime.mday
         else
-          to_time.mday
+          to_tc_time.mday
         end
       end
 
@@ -141,40 +167,46 @@ module TimeCrisis
 
       # Returns the hour of the day (0..23).
       def hour
-        if @time
+        if @tctime
+          @tctime.hour
+        elsif @time
           @time.hour
         elsif @datetime
           @datetime.hour
         elsif @tcdatetime
           @tcdatetime.hour
         else
-          to_time.hour
+          to_tc_time.hour
         end
       end
 
       # Returns the minute of the hour (0..59).
       def min
-        if @time
+        if @tctime
+          @tctime.min
+        elsif @time
           @time.min
         elsif @datetime
           @datetime.min
         elsif @tcdatetime
           @tcdatetime.min
         else
-          to_time.min
+          to_tc_time.min
         end
       end
 
       # Returns the second of the minute (0..60). (60 for a leap second).
       def sec
-        if @time
+        if @tctime
+          @tctime.sec
+        elsif @time
           @time.sec
         elsif @datetime
           @datetime.sec
         elsif @tcdatetime
           @tcdatetime.sec
         else
-          to_time.sec
+          to_tc_time.sec
         end
       end
 
@@ -193,7 +225,9 @@ module TimeCrisis
             # If either is a DateTime, assume it is there for a reason
             # (i.e. for range).
             to_datetime <=> timeOrDateTime.to_datetime
-          elsif orig.is_a?(Time)
+          elsif orig.is_a?(::TimeCrisis::Time)
+            to_tc_time <=> timeOrDateTime.to_tc_time
+          elsif orig.is_a?(::Time)
             to_time <=> timeOrDateTime.to_time
           else
             to_i <=> timeOrDateTime.to_i
@@ -204,7 +238,9 @@ module TimeCrisis
           # If either is a DateTime, assume it is there for a reason
           # (i.e. for range).
           to_datetime <=> TimeOrDateTime.wrap(timeOrDateTime).to_datetime
-        elsif timeOrDateTime.is_a?(Time)
+        elsif timeOrDateTime.is_a?(::TimeCrisis::Time)
+          to_tc_time <=> timeOrDateTime
+        elsif timeOrDateTime.is_a?(::Time)
           to_time <=> timeOrDateTime
         else
           to_i <=> timeOrDateTime.to_i
@@ -291,7 +327,9 @@ module TimeCrisis
 
           if timeOrDateTime.is_a?(TimeOrDateTime)
             t
-          elsif timeOrDateTime.is_a?(Time)
+          elsif timeOrDateTime.is_a?(::TimeCrisis::Time)
+            t.to_tc_time
+          elsif timeOrDateTime.is_a?(::Time)
             t.to_time
           elsif timeOrDateTime.is_a?(::TimeCrisis::DateTime)
             t.to_tc_datetime

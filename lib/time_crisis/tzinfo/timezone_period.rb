@@ -76,24 +76,24 @@ module TimeCrisis
 
       # The start time of the period in UTC as a DateTime. May be nil if unbounded.
       def utc_start
-        @start_transition ? @start_transition.at.to_datetime : nil
+        @start_transition ? @start_transition.at.to_tc_datetime : nil
       end
 
       # The end time of the period in UTC as a DateTime. May be nil if unbounded.
       def utc_end
-        @end_transition ? @end_transition.at.to_datetime : nil
+        @end_transition ? @end_transition.at.to_tc_datetime : nil
       end
 
       # The start time of the period in local time as a DateTime. May be nil if
       # unbounded.
       def local_start
-        @start_transition ? @start_transition.local_start.to_datetime : nil
+        @start_transition ? @start_transition.local_start.to_tc_datetime : nil
       end
 
       # The end time of the period in local time as a DateTime. May be nil if
       # unbounded.
       def local_end
-        @end_transition ? @end_transition.local_end.to_datetime : nil
+        @end_transition ? @end_transition.local_end.to_tc_datetime : nil
       end
 
       # true if daylight savings is in effect for this period; otherwise false.

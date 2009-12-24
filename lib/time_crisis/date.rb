@@ -567,6 +567,10 @@ module TimeCrisis
       [year, yday]
     end
 
+    def days_in_month(m=nil, y=nil)
+      (_leap?(y||year) ? LEAP_DAYS_IN_MONTH : DAYS_IN_MONTH)[m||mon]
+    end
+
     private
 
     def _leap?(year)
@@ -616,10 +620,6 @@ module TimeCrisis
     def commercial_to_jd(y, w, d)
       jd = new_civil(y, 1, 4).jd
       jd - (jd % 7) + 7 * (w - 1) + (d - 1)
-    end
-
-    def days_in_month(m=nil, y=nil)
-      (_leap?(y||year) ? LEAP_DAYS_IN_MONTH : DAYS_IN_MONTH)[m||mon]
     end
 
     def jd_to_civil(jd)
