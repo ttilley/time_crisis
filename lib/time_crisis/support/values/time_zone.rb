@@ -238,7 +238,6 @@ module TimeCrisis
     end
 
     def tzinfo
-      require 'time_crisis/tzinfo' unless defined?(::TimeCrisis::TZInfo)
       @tzinfo ||= ::TimeCrisis::TZInfo::Timezone.get(MAPPING[name])
     end
 

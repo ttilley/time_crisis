@@ -176,7 +176,7 @@ module TimeCrisis
       end
     end
 
-    %w(year mon month day mday wday yday hour min sec to_date).each do |method_name|
+    %w(year mon month day mday wday yday hour min sec to_date to_tc_date).each do |method_name|
       class_eval <<-EOV, __FILE__, __LINE__ + 1
         def #{method_name}    # def month
           time.#{method_name} #   time.month
