@@ -215,7 +215,7 @@ module TimeCrisis
     end
     
     def to_tc_datetime
-      ::TimeCrisis::DateTime.civil(utc.year, utc.month, utc.day, utc.hour, utc.min, utc.sec, 0, utc_offset)
+      utc.to_tc_datetime.new_offset(utc_offset)
     end
 
     def acts_like_time?

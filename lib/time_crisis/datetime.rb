@@ -245,11 +245,12 @@ module TimeCrisis
 
     # compatibility method for TZInfo
     def new_offset(of)
-      if of < 0
-        of = 1 + of
+      if of.is_a?(Rational)
+        of = (1 + of) if of < 0
+        of = of * 86400
       end
-      
-      self.class.new!(:jd=>jd, :parts=>[hour, min, sec, usec], :offset=>(of * 86400))
+
+      self.class.new!(:jd=>jd, :parts=>[hour, min, sec, usec], :offset=>of.to_i)
     end
 
     # Which parts of this datetime were guessed instead of being parsed from the input.
