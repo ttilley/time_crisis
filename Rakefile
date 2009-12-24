@@ -10,9 +10,6 @@ begin
     gem.email = "ttilley@gmail.com"
     gem.homepage = "http://github.com/ttilley/time_crisis"
     gem.authors = ["Travis Tilley"]
-    gem.add_dependency 'third_base'
-    gem.add_development_dependency "thoughtbot-shoulda"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
