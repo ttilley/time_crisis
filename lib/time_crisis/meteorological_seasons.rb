@@ -70,3 +70,6 @@ end
 
 ::TimeCrisis::Date.extend(TimeCrisis::MeteorologicalSeasons::ClassMethods)
 ::TimeCrisis::Date.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)
+::TimeCrisis::DateTime.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)
+::TimeCrisis::Time.send(:include, TimeCrisis::MeteorologicalSeasons::InstanceMethods)
+

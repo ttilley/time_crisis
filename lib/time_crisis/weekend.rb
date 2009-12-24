@@ -1,6 +1,6 @@
 module TimeCrisis::Weekend
   def weekend?
-    [6, 7].include? self.cwday
+    [6, 0].include? self.wday
   end
 
   def weekday?
@@ -10,3 +10,4 @@ end
 
 ::TimeCrisis::Date.send(:include, TimeCrisis::Weekend)
 ::TimeCrisis::DateTime.send(:include, TimeCrisis::Weekend)
+::TimeCrisis::Time.send(:include, TimeCrisis::Weekend)

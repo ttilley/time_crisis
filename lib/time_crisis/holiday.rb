@@ -62,10 +62,8 @@ module TimeCrisis::Holiday
 
       [fourth_thursday_in_november.month, fourth_thursday_in_november.day]
     end
-  end
-
-  module InstanceMethods
-    def holiday?
+    
+    def holidays
       @@holidays ||= {
               :new_years_day => [1, 1],
               :presidents_day => TimeCrisis::Holiday.presidents_day,
@@ -76,11 +74,15 @@ module TimeCrisis::Holiday
               :thanksgiving_day => TimeCrisis::Holiday.thanksgiving_day,
               :christmas_day => [12, 25]
       }
+    end
+  end
 
-      @@holidays.values.include?([self.month, self.day])
+  module InstanceMethods
+    def holiday?
+      TimeCrisis::Holiday.holidays.values.include?([self.month, self.day])
     end
   end
 end
 
 ::TimeCrisis::Date.send(:include, TimeCrisis::Holiday::InstanceMethods)
-::TimeCrisis::DateTime.send(:include, TimeCrisis::Holiday::InstanceMethods)
+::TimeCrisis::Time.send(:include, TimeCrisis::Holiday::InstanceMethods)
