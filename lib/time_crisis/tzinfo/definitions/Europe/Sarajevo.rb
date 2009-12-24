@@ -5,7 +5,7 @@ module TimeCrisis::TZInfo
     module Europe
       module Sarajevo
         include TimezoneDefinition
-
+        
         linked_timezone 'Europe/Sarajevo', 'Europe/Belgrade'
       end
     end

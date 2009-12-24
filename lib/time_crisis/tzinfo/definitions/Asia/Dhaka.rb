@@ -5,7 +5,7 @@ module TimeCrisis::TZInfo
     module Asia
       module Dhaka
         include TimezoneDefinition
-
+        
         timezone 'Asia/Dhaka' do |tz|
           tz.offset :o0, 21700, 0, :LMT
           tz.offset :o1, 21200, 0, :HMT
@@ -14,7 +14,7 @@ module TimeCrisis::TZInfo
           tz.offset :o4, 21600, 0, :DACT
           tz.offset :o5, 21600, 0, :BDT
           tz.offset :o6, 21600, 3600, :BDST
-
+          
           tz.transition 1889, 12, :o1, 2083422167, 864
           tz.transition 1941, 9, :o2, 524937943, 216
           tz.transition 1942, 5, :o3, 116663723, 48

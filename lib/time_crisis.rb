@@ -11,6 +11,10 @@ require 'time_crisis/weekend'
 require 'time_crisis/nth_weekday'
 require 'time_crisis/holiday'
 
+::TimeCrisis::Time.zone_default = ::Time.zone_default if ::Time.respond_to?(:zone_default)
+::TimeCrisis::Time.zone = ::Time.zone if ::Time.respond_to?(:zone)
+::TimeCrisis::Time.zone ||= ::Time.now.zone
+
 # not sure about making this a default behavior
 TCTime = TimeCrisis::Time
 TCDate = TimeCrisis::Date

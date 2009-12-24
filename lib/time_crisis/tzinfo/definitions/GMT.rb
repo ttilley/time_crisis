@@ -1,0 +1,11 @@
+require 'time_crisis/tzinfo/timezone_definition'
+
+module TimeCrisis::TZInfo
+  module Definitions
+    module GMT
+      include TimezoneDefinition
+      
+      linked_timezone 'GMT', 'Etc/GMT'
+    end
+  end
+end

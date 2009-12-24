@@ -5,7 +5,7 @@ module TimeCrisis::TZInfo
     module Europe
       module Skopje
         include TimezoneDefinition
-
+        
         linked_timezone 'Europe/Skopje', 'Europe/Belgrade'
       end
     end
