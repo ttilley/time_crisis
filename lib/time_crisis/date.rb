@@ -535,6 +535,10 @@ module TimeCrisis
     def year
       @year || civil[0]
     end
+    
+    def days_in_month(m=nil, y=nil)
+      (_leap?(y||year) ? LEAP_DAYS_IN_MONTH : DAYS_IN_MONTH)[m||mon]
+    end
 
     protected
 
@@ -565,10 +569,6 @@ module TimeCrisis
 
     def ordinal
       [year, yday]
-    end
-
-    def days_in_month(m=nil, y=nil)
-      (_leap?(y||year) ? LEAP_DAYS_IN_MONTH : DAYS_IN_MONTH)[m||mon]
     end
 
     private
