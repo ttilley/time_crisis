@@ -57,7 +57,7 @@ module TimeCrisis
           if @timestamp
             @tctime = ::TimeCrisis::Time.at(@timestamp).utc
           else
-            @tctime = ::Time.utc(year, mon, mday, hour, min, sec)
+            @tctime = ::TimeCrisis::Time.utc(year, mon, mday, hour, min, sec)
           end
         end
         
