@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{time_crisis}
-  s.version = "0.3.3"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Travis Tilley"]
@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
      "lib/time_crisis/support/time_with_zone.rb",
      "lib/time_crisis/support/values/time_zone.rb",
      "lib/time_crisis/time.rb",
+     "lib/time_crisis/to_json.rb",
      "lib/time_crisis/tzinfo.rb",
      "lib/time_crisis/tzinfo/LICENSE",
      "lib/time_crisis/tzinfo/data_timezone.rb",
