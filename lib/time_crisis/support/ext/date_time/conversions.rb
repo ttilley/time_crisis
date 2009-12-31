@@ -60,7 +60,7 @@ module TimeCrisis
 
     def seconds_since_unix_epoch
       seconds_per_day = 86_400
-      (self - ::TimeCrisis::DateTime.civil(1970)) * seconds_per_day
+      (self - ::TimeCrisis::DateTime.civil(1970, 1, 1)) * seconds_per_day
     end
   end
 end
