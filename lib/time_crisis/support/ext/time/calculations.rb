@@ -8,7 +8,7 @@ module TimeCrisis
 
     class << self
       def ===(other)
-        other.is_a?(::Time)
+        other.is_a?(::Time) || other.is_a?(::TimeCrisis::Time)
       end
 
       def days_in_month(month, year = now.year)
@@ -186,11 +186,6 @@ module TimeCrisis
     def tomorrow
       advance(:days => 1)
     end
-    
-    if instance_methods.include?('plus_without_duration')
-      undef_method :+
-      alias_method :+, :plus_without_duration
-    end
 
     def plus_with_duration(other) #:nodoc:
       if TimeCrisis::Duration === other
@@ -201,11 +196,6 @@ module TimeCrisis
     end
     alias_method :plus_without_duration, :+
     alias_method :+, :plus_with_duration
-    
-    if instance_methods.include?('minus_without_duration')
-      undef_method :-
-      alias_method :-, :minus_without_duration
-    end
 
     def minus_with_duration(other) #:nodoc:
       if TimeCrisis::Duration === other
@@ -223,11 +213,6 @@ module TimeCrisis
     end
     alias_method :minus_without_coercion, :-
     alias_method :-, :minus_with_coercion
-    
-    if instance_methods.include?('compare_without_coercion')
-      undef_method :<=>
-      alias_method :<=>, :compare_without_coercion
-    end
 
     def compare_with_coercion(other)
       other = other.comparable_time if other.respond_to?(:comparable_time)

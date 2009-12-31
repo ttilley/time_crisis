@@ -32,8 +32,9 @@ module TimeCrisis
       self
     end
 
-    def to_tc_datetime
-      ::TimeCrisis::DateTime.civil(year, month, day, 0, 0, 0, 0)
+    def to_tc_datetime(form = :local)
+      offset = form == :local ? (Time.zone.now.utc_offset rescue Time.now.utc_offset) : 0
+      ::TimeCrisis::DateTime.civil(year, month, day, 0, 0, 0, 0, offset)
     end
     
     def to_tc_time(form = :local)

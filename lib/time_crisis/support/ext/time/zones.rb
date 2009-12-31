@@ -6,11 +6,11 @@ module TimeCrisis
       attr_accessor :zone_default
 
       def zone
-        Thread.current[:time_zone] || zone_default
+        Thread.current[:tc_time_zone] || zone_default
       end
 
       def zone=(time_zone)
-        Thread.current[:time_zone] = get_zone(time_zone)
+        Thread.current[:tc_time_zone] = get_zone(time_zone)
       end
 
       def use_zone(time_zone)

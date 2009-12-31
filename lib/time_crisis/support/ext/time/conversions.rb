@@ -10,11 +10,6 @@ module TimeCrisis
       :long         => "%B %d, %Y %H:%M",
       :rfc822       => lambda { |time| time.strftime("%a, %d %b %Y %H:%M:%S #{time.formatted_offset(false)}") }
     }
-    
-    if instance_methods.include?('to_default_s')
-      undef_method :to_s
-      alias_method :to_s, :to_default_s
-    end
 
     def to_formatted_s(format = :default)
       if formatter = DATE_FORMATS[format]
@@ -28,11 +23,6 @@ module TimeCrisis
 
     def formatted_offset(colon = true, alternate_utc_string = nil)
       utc? && alternate_utc_string || TimeCrisis::TimeZone.seconds_to_utc_offset(utc_offset, colon)
-    end
-    
-    if instance_methods.include?('default_inspect')
-      undef_method :inspect
-      alias_method :inspect, :default_inspect
     end
 
     def readable_inspect
