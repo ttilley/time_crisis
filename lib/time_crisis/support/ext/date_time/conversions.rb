@@ -33,15 +33,15 @@ module TimeCrisis
     end
 
     def to_datetime
-      ::DateTime.civil(year, month, day, hour, minute, second, Rational(offset, 86400))
+      ::DateTime.civil(year, month, day, hour, min, second, Rational(offset, 86400))
     end
 
     def to_time
-      ::Time.at(self.to_i)
+      ::Time.at(self.to_f)
     end
     
     def to_tc_time
-      ::TimeCrisis::Time.at(self.to_i)
+      ::TimeCrisis::Time.at(self.to_f)
     end
 
     def xmlschema
@@ -60,7 +60,7 @@ module TimeCrisis
 
     def seconds_since_unix_epoch
       seconds_per_day = 86_400
-      (self - ::TimeCrisis::DateTime.civil(1970, 1, 1)) * seconds_per_day
+      (self.utc - ::TimeCrisis::DateTime.civil(1970, 1, 1)) * seconds_per_day
     end
   end
 end

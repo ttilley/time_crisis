@@ -36,7 +36,7 @@ module TimeCrisis
     end
 
     def to_time
-      ::Time.at(self.to_i)
+      ::Time.at(self.to_f)
     end
 
     def to_datetime
